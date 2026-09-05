@@ -9,13 +9,15 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { CrosscheckCard } from '@/components/decision/crosscheck-card';
 import { ComingSoonCard } from '@/components/decision/coming-soon-card';
-import { runCrosscheck } from '@/lib/client/api';
+import { MemoCard } from '@/components/decision/memo-card';
+import { runCrosscheck, runMemo } from '@/lib/client/api';
 import { useRun, useStage } from '@/lib/store/RunProvider';
 import type { SourceDocId } from '@/lib/contracts/types';
 
 export default function DecisionPage() {
   const { run, dispatch } = useRun();
   const decisionStage = useStage('decision');
+  const memoStage = useStage('memo');
   const startedRef = useRef(false);
 
   const docIds = run.docs.map((d) => d.id) as SourceDocId[];
@@ -23,6 +25,18 @@ export default function DecisionPage() {
   function start() {
     if (!run.extraction) return;
     void runCrosscheck(dispatch, docIds, run.extraction.profile);
+  }
+
+  function draftMemo() {
+    if (!run.deal || !run.extraction || !run.benchmark || !run.portfolio || !run.decision) return;
+    void runMemo(
+      dispatch,
+      run.deal,
+      run.extraction.profile,
+      run.benchmark,
+      run.portfolio,
+      run.decision.crosschecks
+    );
   }
 
   useEffect(() => {
@@ -46,7 +60,7 @@ export default function DecisionPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       <div>
         <h1 className="font-heading text-xl font-semibold tracking-tight">Decision</h1>
         <p className="text-sm text-muted-foreground">
@@ -87,6 +101,31 @@ export default function DecisionPage() {
               </div>
             </div>
           )}
+
+          <div className="pt-8">
+            {!run.memo && memoStage.status === 'idle' && (
+               <Button onClick={draftMemo} disabled={!run.benchmark || !run.portfolio}>
+                 Draft IC Memo
+               </Button>
+            )}
+            
+            {memoStage.status === 'running' && (
+              <div className="rounded-lg border bg-muted/40 px-4 py-3 text-sm text-muted-foreground mt-4" role="status">
+                Drafting IC Memo...
+              </div>
+            )}
+            
+            {memoStage.status === 'error' && (
+              <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm mt-4">
+                <p>{memoStage.error?.message ?? 'Memo generation failed.'}</p>
+                <Button variant="outline" size="sm" onClick={draftMemo}>
+                  Retry Memo
+                </Button>
+              </div>
+            )}
+
+            {run.memo && memoStage.status === 'done' && <MemoCard />}
+          </div>
         </>
       )}
     </div>
