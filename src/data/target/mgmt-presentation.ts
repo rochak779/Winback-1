@@ -106,7 +106,7 @@ export const MGMT_PRESENTATION: SourceDoc = {
       kind: 'bullet',
       page: 5,
       section: 'Customer Base',
-      text: 'No single customer represents more than 12% of FY24 revenue, with the top ten customers spanning hospital systems, multi-specialty physician groups, and ambulatory surgery centers across North and South Carolina.',
+      text: 'The customer base spans hospital systems, multi-specialty physician groups, and ambulatory surgery centers across North and South Carolina, anchored by long-term service agreements with several of the region\'s largest regional health networks.',
     },
 
     // --- Slide 6: Management team ---
