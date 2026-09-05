@@ -35,7 +35,7 @@ export function graphUnavailable() {
 export function createGraphHandler(source: GraphSource, now = Date.now) {
   const cache = new Map<string, { expiresAt: number; graph: KnowledgeGraph }>();
   return async function GET(req: Request) {
-    const response = await withRoute('GET /api/graph', async () => {
+    const response = await withRoute(req, 'GET /api/graph', 'standard', async () => {
       const started = now();
       const params = new URL(req.url).searchParams;
       if ([...params.keys()].some((key) => params.getAll(key).length > 1)) return apiError('BAD_REQUEST', 'Duplicate query parameters');
