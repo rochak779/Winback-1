@@ -151,6 +151,47 @@ MOCK_LLM=1 pnpm dev
 
 Thanks to pre-recorded golden fixtures (`src/data/golden/`), the entire pipeline—extraction, benchmarking, crosschecks, and memo drafting—will work instantly and identically as it would with real LLM calls.
 
+### Authentication Setup
+
+The application requires Supabase (Postgres + Auth) for all authentication. Every route is protected; unauthenticated requests redirect to `/sign-in`.
+
+**Environment Variables:**
+
+Add these to your `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-project-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<your-supabase-service-role-key>
+```
+
+**First Run:**
+
+When you start `pnpm dev`, the app will redirect to `/sign-in` until you create an account:
+
+1. Go to **[http://localhost:3000/sign-up](http://localhost:3000/sign-up)** and create an account with email + password.
+2. Complete the **onboarding wizard** (4 steps):
+   - **Your details** — enter your full name.
+   - **Company details** — create an organization (you become an `admin`).
+   - **Invite teammates** — optionally generate copyable `/invite/[token]` links to share with others.
+   - **Upload documents** — optionally name companies to track (stub only; extraction wiring is future work).
+3. Redirect to `/` (Plan screen) as an authenticated user.
+
+**Auth Flows:**
+
+- **Sign up:** Email + password → user profile → onboarding wizard.
+- **Sign in:** `/sign-in` for returning users.
+- **Forgot password:** Email link → `/reset-password`.
+- **Invites:** `/invite/[token]` — admins generate links, teammates accept to join the org.
+
+**Permissions:**
+
+Two roles, enforced via Postgres row-level security:
+- **Admin:** Can invite users, edit org details, and manage company list.
+- **Member:** View-only.
+
+For the complete design, architecture, and data model, see [`docs/superpowers/specs/2026-09-05-auth-onboarding-foundation-design.md`](./docs/superpowers/specs/2026-09-05-auth-onboarding-foundation-design.md).
+
 ## Out of Scope
 
 To ensure a high-quality slice of value within the 24-hour build constraints, the following were deliberately omitted:
