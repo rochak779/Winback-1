@@ -26,7 +26,7 @@ function ConcentrationBar({ label, pct, emphasized }: { label: string; pct: numb
       <span className="w-12 shrink-0 text-xs text-muted-foreground">{label}</span>
       <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
         <div
-          className={cn('h-full rounded-full', emphasized ? 'bg-primary' : 'bg-foreground/60')}
+          className={cn('h-full rounded-full', emphasized ? 'bg-primary' : 'bg-muted-foreground')}
           style={{ width: `${Math.min(pct, 100)}%` }}
         />
       </div>
@@ -72,7 +72,7 @@ export function PortfolioPanel({ portfolio }: { portfolio: PortfolioImpact }) {
             <p className="text-xs font-medium text-muted-foreground">Sector concentration of committed capital</p>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1">
-                <span className="size-2 rounded-full bg-foreground/60" /> Before
+                <span className="size-2 rounded-full bg-muted-foreground" /> Before
               </span>
               <span className="inline-flex items-center gap-1">
                 <span className="size-2 rounded-full bg-primary" /> After (target sector)

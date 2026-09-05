@@ -55,7 +55,7 @@ function MemoSection({
           </div>
         </div>
       ) : (
-        <div className="prose prose-sm dark:prose-invert mt-2 text-muted-foreground">
+        <div className="max-w-none prose prose-sm dark:prose-invert mt-2 text-muted-foreground">
           {section.body.split('\n').map((para, i) => (
             <p key={i} className="mb-2 last:mb-0">
               {para}
@@ -98,8 +98,8 @@ export function MemoCard() {
   }
 
   return (
-    <Card className="mt-8 border-primary/20 bg-primary/5">
-      <CardHeader className="border-b bg-background/50 pb-4">
+    <Card className="mt-8 bg-background border-border">
+      <CardHeader className="border-b pb-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <CardTitle className="text-lg">Investment Committee Memo</CardTitle>
@@ -117,12 +117,12 @@ export function MemoCard() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-0 pt-6 bg-background">
+      <CardContent className="space-y-0 pt-6">
         {memo.sections.map((section) => (
           <MemoSection key={section.id} section={section} onEdit={editSection} />
         ))}
       </CardContent>
-      <CardFooter className="border-t bg-background/50 flex flex-wrap items-center justify-between gap-4 py-4 mt-6">
+      <CardFooter className="border-t flex flex-wrap items-center justify-between gap-4 py-4 mt-6">
         <p className="text-xs text-muted-foreground max-w-lg">{memo.disclaimer}</p>
         <div className="flex gap-2">
           {memo.status !== 'approved' && (

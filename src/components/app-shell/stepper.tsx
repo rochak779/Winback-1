@@ -60,7 +60,7 @@ export function Stepper() {
                 href={step.href}
                 className={cn(
                   'flex items-center gap-1.5 rounded-full px-2 py-1 transition-colors hover:bg-muted',
-                  active ? 'font-medium text-foreground' : 'text-muted-foreground',
+                  active ? 'font-bold text-stage-active' : step.status === 'done' ? 'text-stage-done' : 'text-muted-foreground',
                 )}
               >
                 <StepDot status={step.status} />

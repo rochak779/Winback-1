@@ -91,7 +91,7 @@ export function BenchmarkPanel({ benchmark }: { benchmark: BenchmarkResult }) {
               {benchmark.rows.map((row) => (
                 <TableRow key={row.metric}>
                   <TableCell className="font-medium">{row.label}</TableCell>
-                  <TableCell className="text-right font-heading text-base tabular-nums">
+                  <TableCell className="text-right font-bold text-base tabular-nums text-foreground">
                     {row.targetValue === null ? (
                       <Tooltip>
                         <TooltipTrigger render={<span className="cursor-default text-muted-foreground" tabIndex={0} />}>—</TooltipTrigger>
