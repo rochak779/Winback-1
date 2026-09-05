@@ -11,8 +11,10 @@
 //   - True defensibly-recurring revenue %:      48.3% (sticky contracts only,
 //     $22.1m / $45.8m FY24 revenue), vs. the mgmt deck's claimed 80%.
 //     Convenience-terminable contracts: $14.2m, 31.0% of FY24 revenue.
-//   - True fully-diluted share count:           TBD — session 1.3
-//   - True fully-diluted ownership delta:       TBD — session 1.3
+//   - True fully-diluted share count:           8,082,000 (stated 7,850,000
+//     + four board-approved grants absent from the cap table: g8-g11,
+//     232,000 options total).
+//   - True fully-diluted ownership delta:       2.87 percentage points
 // ============================================================================
 
 import type { SourceDoc } from '@/lib/contracts/types';
