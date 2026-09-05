@@ -23,7 +23,7 @@ export function Header() {
         <div className="flex-1" />
         <Stepper />
         {isMock && (
-          <Badge className="shrink-0 border-attention/40 bg-attention/20 text-attention-foreground" variant="outline">
+          <Badge className="shrink-0 bg-amber-500/20 text-amber-600 border-amber-500/30" variant="outline">
             MOCK
           </Badge>
         )}

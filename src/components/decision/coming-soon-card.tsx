@@ -4,7 +4,7 @@ import type { ComingSoonWorkstream } from '@/lib/contracts/types';
 
 export function ComingSoonCard({ item }: { item: ComingSoonWorkstream }) {
   return (
-    <Card className="opacity-60">
+    <Card className="opacity-50 grayscale bg-muted/50 cursor-not-allowed">
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-sm">{item.label}</CardTitle>
