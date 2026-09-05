@@ -9,18 +9,20 @@
 'use client';
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
-import type { EvidenceRef } from '@/lib/contracts/types';
+import type { EvidenceRef, SourceDoc } from '@/lib/contracts/types';
 
 interface DrawerState {
   refs: EvidenceRef[];
   index: number;
   /** The chip that opened the drawer, so focus returns to it on close. */
   triggerEl: HTMLElement | null;
+  /** Source snapshot for graph history; never replaces the active run's docs. */
+  docs?: SourceDoc[];
 }
 
 interface EvidenceDrawerContextValue {
   state: DrawerState | null;
-  open: (refs: EvidenceRef[], index?: number) => void;
+  open: (refs: EvidenceRef[], index?: number, docs?: SourceDoc[]) => void;
   close: () => void;
   next: () => void;
   prev: () => void;
@@ -31,10 +33,10 @@ const EvidenceDrawerContext = createContext<EvidenceDrawerContextValue | null>(n
 export function EvidenceDrawerProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<DrawerState | null>(null);
 
-  const open = useCallback((refs: EvidenceRef[], index = 0) => {
+  const open = useCallback((refs: EvidenceRef[], index = 0, docs?: SourceDoc[]) => {
     if (refs.length === 0) return;
     const triggerEl = typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) : null;
-    setState({ refs, index, triggerEl });
+    setState({ refs, index, triggerEl, docs });
   }, []);
   const close = useCallback(() => {
     setState((s) => {

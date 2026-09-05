@@ -4,7 +4,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 Run `pnpm dev`, then open **[/graph?demo=1](http://localhost:3000/graph?demo=1)** for the
 explicitly labelled historical preview. This change implements only ERD Part 10 / Phase 6.4.
-It does not implement authentication, Firestore persistence, the run store, audit, or other screens.
+It reuses the existing app shell, run store and shared evidence drawer; it does not implement
+authentication, Firestore persistence, audit, or other screens.
 
 - `src/lib/graph/build.ts`: pure, synchronous `buildKnowledgeGraph(sessions, docs)`.
   `GraphSession` is a structural projection of the ERD's persisted session, so a full
@@ -22,7 +23,9 @@ It does not implement authentication, Firestore persistence, the run store, audi
   the contract supplies no explicit finding IDs or independently verified support relation.
 - `/graph` uses the installed `d3-force`, `d3-selection`, `d3-drag`, and `d3-zoom` with SVG.
   Hover/focus highlights immediate neighbours. Click opens details; block clicks open the
-  source drawer with the cited passage highlighted, resolved locally without a fetch.
+  shared source drawer with the cited passage highlighted, resolved locally without a fetch.
+  An optional document snapshot on the existing drawer provider keeps historical sources
+  separate from the active run without creating another drawer or overwriting run state.
   Search selects and pans to matches (also revealing a hidden matching type), the legend
   filters types, and the scope switches between one session and all sessions. Shared nodes
   have an extra ring; flagged nodes/edges also use dashed outlines, not colour alone.

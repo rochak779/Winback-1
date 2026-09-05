@@ -1,5 +1,4 @@
 .root {
-  --attention: var(--destructive);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   width: 100%;
 }

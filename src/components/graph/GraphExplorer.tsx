@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ApiResponseSchema, KnowledgeGraphSchema, NodeTypeSchema } from '@/lib/contracts/schemas';
-import type { EvidenceRef, GraphNode, KnowledgeGraph, NodeType, SourceDoc } from '@/lib/contracts/types';
-import { EvidenceDrawer } from '@/components/evidence/EvidenceDrawer';
+import type { GraphNode, KnowledgeGraph, NodeType, SourceDoc } from '@/lib/contracts/types';
+import { useEvidenceDrawer } from '@/lib/store/EvidenceDrawerProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { GraphCanvas, TYPE_COLORS } from './GraphCanvas';
@@ -26,8 +26,7 @@ export function GraphExplorer({ docs, historical, initialSessionId }: {
   const [selected, setSelected] = useState<GraphNode | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [resetKey, setResetKey] = useState(0);
-  const [evidence, setEvidence] = useState<EvidenceRef | null>(null);
-  const [documentId, setDocumentId] = useState<string | null>(null);
+  const { open: openEvidence } = useEvidenceDrawer();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -58,15 +57,22 @@ export function GraphExplorer({ docs, historical, initialSessionId }: {
     .filter((node) => node.label.toLowerCase().includes(search.trim().toLowerCase())).slice(0, 10), [graph, search]);
   const choose = useCallback((node: GraphNode) => {
     setSelected(node);
-    if (node.type === 'block' && node.evidence) setEvidence(node.evidence);
-  }, []);
+    if (node.type === 'block' && node.evidence) openEvidence([node.evidence], 0, docs);
+  }, [openEvidence, docs]);
+  const openDocument = (docId: string) => {
+    const doc = docs.find((doc) => doc.id === docId);
+    const block = doc?.blocks.find((block) => !block.deprecated);
+    if (doc && block) openEvidence([{
+      docId: doc.id, blockId: block.id, page: block.page, quote: '', quoteVerified: false,
+    }], 0, docs);
+  };
   const changeScope = (value: 'session' | 'all') => {
     if (value === scope) return;
     setState({ status: 'loading' }); setSelected(null); setFocusId(null); setSearch(''); setScope(value);
   };
   const selectedLinks = graph?.edges.filter((edge) => edge.source === selected?.id || edge.target === selected?.id) ?? [];
 
-  return <main className={`${styles.root} mx-auto max-w-screen-2xl p-6 lg:p-8`}>
+  return <div className={`${styles.root} mx-auto max-w-screen-2xl`}>
     <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="mb-2 text-sm font-medium text-muted-foreground">WinBack · Evidence and connections</p>
@@ -150,8 +156,8 @@ export function GraphExplorer({ docs, historical, initialSessionId }: {
                 <dt className="text-xs text-muted-foreground">{key.replace(/([A-Z])/g, ' $1')}</dt><dd>{value === null ? '—' : String(value)}</dd>
               </div>)}
             </dl>
-            {selected.evidence && <Button className="mt-4" variant="outline" onClick={() => setEvidence(selected.evidence)}>Open source block</Button>}
-            {selected.type === 'document' && <Button className="mt-4" variant="outline" onClick={() => setDocumentId(String(selected.meta.docId))}>Open source document</Button>}
+            {selected.evidence && <Button className="mt-4" variant="outline" onClick={() => openEvidence([selected.evidence!], 0, docs)}>Open source block</Button>}
+            {selected.type === 'document' && <Button className="mt-4" variant="outline" onClick={() => openDocument(String(selected.meta.docId))}>Open source document</Button>}
             {selected.href && !historical && !['block', 'document'].includes(selected.type) && <Link className="mt-4 block text-sm underline" href={selected.href}>Open in {selected.type === 'finding' || selected.type === 'memo_section' ? 'Decision' : 'deal'}</Link>}
             {historical && selected.href && !['block', 'document'].includes(selected.type) && <p className="mt-3 text-xs text-muted-foreground">Historical fixture · No live deal page</p>}
             <h3 className="mb-2 mt-4 text-sm font-medium">Connections ({selectedLinks.length})</h3>
@@ -165,6 +171,5 @@ export function GraphExplorer({ docs, historical, initialSessionId }: {
         </section>
       </aside>
     </div>
-    <EvidenceDrawer docs={docs} evidence={evidence} docId={documentId} onClose={() => { setEvidence(null); setDocumentId(null); }} />
-  </main>;
+  </div>;
 }
