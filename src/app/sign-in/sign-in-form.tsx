@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
+import { getUserOrgs } from '@/lib/org/membership';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -21,10 +22,19 @@ export default function SignInForm() {
     setPending(true);
     setError(null);
     const supabase = createBrowserSupabaseClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    setPending(false);
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     if (signInError) {
+      setPending(false);
       setError(signInError.message);
+      return;
+    }
+    // A confirmed-but-never-onboarded user (e.g. they signed up, confirmed by
+    // email later, and are only now signing in for the first time) has no org
+    // yet — send them through the wizard instead of straight to `next`/`/`.
+    const orgs = data.user ? await getUserOrgs(supabase as never, data.user.id) : [];
+    setPending(false);
+    if (orgs.length === 0) {
+      router.push('/onboarding');
       return;
     }
     // Only same-origin relative paths — never an attacker-supplied absolute URL.
