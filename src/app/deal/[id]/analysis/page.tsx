@@ -29,7 +29,7 @@ function PanelSkeleton() {
 
 function ErrorPanel({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm">
+    <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
       <p>{message}</p>
       <Button variant="outline" size="sm" onClick={onRetry}>
         Retry
@@ -86,8 +86,8 @@ export default function AnalysisPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div>
+      <div className="grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-7">
           {benchmarkStage.status === 'running' && <PanelSkeleton />}
           {benchmarkStage.status === 'error' && (
             <ErrorPanel message={benchmarkStage.error?.message ?? 'Benchmark failed.'} onRetry={startBenchmark} />
@@ -95,7 +95,7 @@ export default function AnalysisPage() {
           {run.benchmark && benchmarkStage.status === 'done' && <BenchmarkPanel benchmark={run.benchmark} />}
         </div>
 
-        <div>
+        <div className="lg:col-span-5">
           {portfolioStage.status === 'running' && <PanelSkeleton />}
           {portfolioStage.status === 'error' && (
             <ErrorPanel message={portfolioStage.error?.message ?? 'Portfolio impact failed.'} onRetry={startPortfolio} />

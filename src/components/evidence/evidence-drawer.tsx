@@ -41,7 +41,7 @@ function BlockRow({ block, isCited, quote, quoteVerified }: { block: Block; isCi
       ref={ref}
       className={cn(
         'rounded-lg border px-3 py-2 text-sm leading-relaxed',
-        isCited ? 'border-evidence-foreground/40 bg-evidence' : 'border-transparent',
+        isCited ? 'border-attention/40 bg-attention/10' : 'border-transparent',
       )}
     >
       <div className="mb-1 text-xs text-muted-foreground">
@@ -51,7 +51,7 @@ function BlockRow({ block, isCited, quote, quoteVerified }: { block: Block; isCi
       {split ? (
         <p>
           {split[0]}
-          <mark className="rounded bg-attention px-0.5 text-attention-foreground">{split[1]}</mark>
+          <mark className="rounded bg-attention/30 px-0.5 font-medium text-attention-foreground">{split[1]}</mark>
           {split[2]}
         </p>
       ) : (

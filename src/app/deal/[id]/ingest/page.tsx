@@ -79,7 +79,7 @@ export default function IngestPage() {
       {extractStage.status === 'running' && <LoadingBanner key={run.stages.extract.startedAt} />}
 
       {extractStage.status === 'error' && (
-        <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm">
+        <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           <p>{extractStage.error?.message ?? 'Extraction failed.'}</p>
           <Button variant="outline" size="sm" onClick={handleExtract}>
             Retry

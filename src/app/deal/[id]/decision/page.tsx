@@ -75,7 +75,7 @@ export default function DecisionPage() {
       )}
 
       {decisionStage.status === 'error' && (
-        <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm">
+        <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           <p>{decisionStage.error?.message ?? 'Crosscheck failed.'}</p>
           <Button variant="outline" size="sm" onClick={start}>
             Retry
@@ -116,7 +116,7 @@ export default function DecisionPage() {
             )}
             
             {memoStage.status === 'error' && (
-              <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm mt-4">
+              <div className="flex flex-col items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive mt-4">
                 <p>{memoStage.error?.message ?? 'Memo generation failed.'}</p>
                 <Button variant="outline" size="sm" onClick={draftMemo}>
                   Retry Memo
