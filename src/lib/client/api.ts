@@ -13,14 +13,18 @@ import {
   CrosscheckResponseSchema,
   DocsResponseSchema,
   ExtractResponseSchema,
+  MemoResponseSchema,
   PortfolioResponseSchema,
 } from '@/lib/contracts/schemas';
 import type {
   ApiError,
   BenchmarkResult,
   CompanyProfile,
+  Crosscheck,
+  Deal,
   DecisionResult,
   ExtractionResult,
+  IcMemo,
   PortfolioImpact,
   SourceDoc,
   SourceDocId,
@@ -150,6 +154,34 @@ export async function runCrosscheck(
     return parsed.data.data;
   } catch {
     dispatch({ type: 'STAGE_ERROR', stage: 'decision', error: NETWORK_ERROR });
+    return null;
+  }
+}
+
+export async function runMemo(
+  dispatch: Dispatch,
+  deal: Deal,
+  profile: CompanyProfile,
+  benchmark: BenchmarkResult,
+  portfolio: PortfolioImpact,
+  crosschecks: Crosscheck[],
+): Promise<IcMemo | null> {
+  dispatch({ type: 'STAGE_START', stage: 'memo' });
+  try {
+    const json = await postJson('/api/memo', { deal, profile, benchmark, portfolio, crosschecks });
+    const parsed = MemoResponseSchema.safeParse(json);
+    if (!parsed.success) {
+      dispatch({ type: 'STAGE_ERROR', stage: 'memo', error: CONTRACT_ERROR });
+      return null;
+    }
+    if (!parsed.data.ok) {
+      dispatch({ type: 'STAGE_ERROR', stage: 'memo', error: parsed.data.error });
+      return null;
+    }
+    dispatch({ type: 'STAGE_SUCCESS', stage: 'memo', payload: parsed.data.data, meta: parsed.data.meta });
+    return parsed.data.data;
+  } catch {
+    dispatch({ type: 'STAGE_ERROR', stage: 'memo', error: NETWORK_ERROR });
     return null;
   }
 }

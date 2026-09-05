@@ -84,7 +84,10 @@ export type RunAction =
   | { type: 'STAGE_ERROR'; stage: Stage; error: ApiError }
   /** Analyst accept/dismiss/edit on a Decision-screen finding card (erd.md Part 6 §6.7). */
   | { type: 'CROSSCHECK_DECISION'; crosscheckId: CrosscheckId; decision: 'pending' | 'accepted' | 'dismissed'; note?: string | null }
+  | { type: 'MEMO_STATUS'; status: 'draft' | 'analyst_edited' | 'approved' }
+  | { type: 'MEMO_EDIT_SECTION'; sectionId: string; body: string }
   | { type: 'RESET'; id: string }
+
   | { type: 'HYDRATE'; run: Run };
 
 function runReducer(run: Run, action: RunAction): Run {
@@ -134,6 +137,23 @@ function runReducer(run: Run, action: RunAction): Run {
           ...run.decision,
           crosschecks: run.decision.crosschecks.map((c) =>
             c.id === action.crosscheckId ? { ...c, analystDecision: action.decision, analystNote: action.note ?? c.analystNote } : c,
+          ),
+        },
+      };
+    case 'MEMO_STATUS':
+      if (!run.memo) return run;
+      return { ...run, memo: { ...run.memo, status: action.status } };
+    case 'MEMO_EDIT_SECTION':
+      if (!run.memo) return run;
+      return {
+        ...run,
+        memo: {
+          ...run.memo,
+          status: 'analyst_edited',
+          sections: run.memo.sections.map((s) =>
+            s.id === action.sectionId
+              ? { ...s, body: action.body, edited: true, originalBody: s.originalBody ?? s.body }
+              : s
           ),
         },
       };

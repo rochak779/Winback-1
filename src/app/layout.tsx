@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description: "Extraction, benchmark, portfolio impact, and evidence-linked decision support for PE deal teams.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
