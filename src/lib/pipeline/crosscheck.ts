@@ -15,7 +15,7 @@ import { generateJson } from '@/lib/pipeline/gemini';
 import { renderDocForPrompt, validateEvidence } from '@/lib/evidence';
 import { ModelEvidenceRefSchema, evidenceArraySchema, nullable, toEvidenceRef } from '@/lib/pipeline/schema-helpers';
 import { CrosscheckStatusSchema } from '@/lib/contracts/schemas';
-import type { CrosscheckId, SourceDoc, SourceDocId, Workstream } from '@/lib/contracts/types';
+import type { CrosscheckId, EvidenceRef, SourceDoc, SourceDocId, Workstream } from '@/lib/contracts/types';
 
 export interface CrosscheckDef {
   id: CrosscheckId;
@@ -134,11 +134,17 @@ function buildCrosscheckPrompt(def: CrosscheckDef, docs: SourceDoc[]): { systemI
 // One call per definition
 // ----------------------------------------------------------------------------
 
+/** ModelCrosscheck, but with claim.evidence / counterEvidence validated into full EvidenceRefs. */
+type ValidatedCrosscheck = Omit<ModelCrosscheck, 'claim' | 'counterEvidence'> & {
+  claim: { text: string; evidence: EvidenceRef[] };
+  counterEvidence: EvidenceRef[];
+};
+
 export interface CrosscheckRunResult {
   model: string;
   ms: number;
   /** The model's output with claim.evidence / counterEvidence already validated against the real docs. */
-  data: ModelCrosscheck;
+  data: ValidatedCrosscheck;
   droppedEvidenceRefs: number;
 }
 
