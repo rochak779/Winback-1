@@ -8,7 +8,9 @@
 // true ownership delta. It is a comment for humans; the pipeline never reads it.
 //
 // GROUND TRUTH (filled in as each contradiction is planted):
-//   - True defensibly-recurring revenue %:      TBD — session 1.2
+//   - True defensibly-recurring revenue %:      48.3% (sticky contracts only,
+//     $22.1m / $45.8m FY24 revenue), vs. the mgmt deck's claimed 80%.
+//     Convenience-terminable contracts: $14.2m, 31.0% of FY24 revenue.
 //   - True fully-diluted share count:           TBD — session 1.3
 //   - True fully-diluted ownership delta:       TBD — session 1.3
 // ============================================================================

@@ -8,7 +8,7 @@
 // this file doesn't re-check it at runtime.
 // ============================================================================
 
-import { TARGET_DOCS } from '../src/data/target';
+import { TARGET_DOCS, TARGET_COMPANY_IDENTITY } from '../src/data/target';
 import type { SourceDoc } from '../src/lib/contracts/types';
 
 const ID_PATTERN: Record<SourceDoc['id'], RegExp> = {
@@ -67,6 +67,62 @@ for (const doc of TARGET_DOCS) {
 // 5. Total characters across all docs <= 40,000.
 if (totalChars > MAX_TOTAL_CHARS) {
   fail(`total characters across all docs (${totalChars}) exceeds the ${MAX_TOTAL_CHARS} budget`);
+}
+
+// 6. Contradiction 1 is structurally present.
+{
+  const mgmtPres = TARGET_DOCS.find((d) => d.id === 'mgmt-pres');
+  const contracts = TARGET_DOCS.find((d) => d.id === 'contracts');
+
+  if (mgmtPres && contracts) {
+    const claimPattern = /\b\d{2}%\s+of\s+.*revenue.*recurring/i;
+    const hasClaim = mgmtPres.blocks.some((b) => claimPattern.test(b.text));
+    if (!hasClaim) {
+      fail("[contradiction 1] no mgmt-pres block matches the recurring-revenue claim pattern");
+    }
+
+    // Group contract clauses by contract number (the 'c<n>-' prefix of the block id).
+    const convenancePattern = /(for convenience|for any reason|without cause)/i;
+    const thirtyDayPattern = /\bthirty\s*\(?30\)?\s*days\b|\b30\s*days\b/i;
+    const acvPattern = /\$([\d.]+)m/;
+
+    const byContract = new Map<string, typeof contracts.blocks>();
+    for (const b of contracts.blocks) {
+      const m = /^c(\d+)-/.exec(b.id);
+      if (!m) continue;
+      const key = m[1]!;
+      const list = byContract.get(key) ?? [];
+      list.push(b);
+      byContract.set(key, list);
+    }
+
+    let qualifyingAcvUsdM = 0;
+    let qualifyingCount = 0;
+    for (const blocks of byContract.values()) {
+      const hasConvenienceClause = blocks.some(
+        (b) => convenancePattern.test(b.text) && thirtyDayPattern.test(b.text),
+      );
+      if (!hasConvenienceClause) continue;
+      qualifyingCount += 1;
+      const header = blocks.find((b) => b.id.endsWith('-h'));
+      const acvMatch = header ? acvPattern.exec(header.text) : null;
+      if (acvMatch) qualifyingAcvUsdM += Number(acvMatch[1]);
+    }
+
+    const fy24RevenueUsdM = TARGET_COMPANY_IDENTITY.financials.at(-1)?.revenueUsdM ?? 0;
+    const qualifyingPctOfRevenue = fy24RevenueUsdM > 0 ? (qualifyingAcvUsdM / fy24RevenueUsdM) * 100 : 0;
+
+    if (contracts.blocks.length > 0) {
+      if (qualifyingCount < 3) {
+        fail(`[contradiction 1] only ${qualifyingCount} contract(s) carry a 30-day convenience-termination clause; need >= 3`);
+      }
+      if (qualifyingPctOfRevenue < 20) {
+        fail(
+          `[contradiction 1] convenience-terminable contracts total $${qualifyingAcvUsdM}m (${qualifyingPctOfRevenue.toFixed(1)}% of FY24 revenue); need >= 20%`,
+        );
+      }
+    }
+  }
 }
 
 if (failures.length > 0) {
