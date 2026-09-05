@@ -405,6 +405,7 @@ export const StageStatusSchema = z.enum(['idle', 'running', 'done', 'error']);
 
 export const ErrorCodeSchema = z.enum([
   'BAD_REQUEST',
+  'UNAUTHORIZED',
   'RATE_LIMITED',
   'LLM_ERROR',
   'LLM_TIMEOUT',

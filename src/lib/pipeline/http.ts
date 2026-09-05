@@ -16,6 +16,8 @@ function statusForCode(code: ErrorCode): number {
   switch (code) {
     case 'BAD_REQUEST':
       return 400;
+    case 'UNAUTHORIZED':
+      return 401;
     case 'RATE_LIMITED':
       return 429;
     case 'LLM_TIMEOUT':
