@@ -4,7 +4,7 @@ import "./globals.css";
 import { RunProvider } from "@/lib/store/RunProvider";
 import { EvidenceDrawerProvider } from "@/lib/store/EvidenceDrawerProvider";
 import { EvidenceDrawer } from "@/components/evidence/evidence-drawer";
-import { Header } from "@/components/app-shell/header";
+import { AppShell } from "@/components/app-shell/app-shell";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -33,8 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RunProvider>
           <TooltipProvider>
             <EvidenceDrawerProvider>
-              <Header />
-              <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">{children}</main>
+              <AppShell>{children}</AppShell>
               <EvidenceDrawer />
             </EvidenceDrawerProvider>
           </TooltipProvider>
