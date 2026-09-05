@@ -1,0 +1,117 @@
+{
+  "sections": [
+    {
+      "id": "situation",
+      "heading": "Situation Overview",
+      "body": "Project Meridian represents a potential $210 million acquisition of Kestrelbrook Health Partners (Meridian Health Partners), an outpatient healthcare services provider founded in 2013 and headquartered in Raleigh, North Carolina.\n\nThe business operates a network of outpatient diagnostic imaging and specialty care clinics across the Carolinas. Key operating characteristics include:\n- Service delivery under long-term agreements with regional health systems and independent physician groups.\n- Senior leadership team with an average tenure of 13 years in outpatient healthcare operations.\n- Stated growth strategy focused on same-site volume expansion, de novo clinic rollouts in adjacent Carolinas markets, and tuck-in acquisitions of independent specialty practices.",
+      "evidence": [
+        {
+          "docId": "mgmt-pres",
+          "blockId": "s6-b1",
+          "quote": "The senior leadership team averages 13 years in outpatient healthcare operations."
+        },
+        {
+          "docId": "mgmt-pres",
+          "blockId": "s7-b1",
+          "quote": "Growth strategy centers on same-site volume growth, de novo clinic openings in adjacent Carolinas metros, and selective tuck-in acquisitions of independent specialty practices."
+        }
+      ]
+    },
+    {
+      "id": "numbers",
+      "heading": "Financial Performance & Benchmarking",
+      "body": "Historical financial performance demonstrates steady revenue expansion and EBITDA margin progression from FY22 to FY24:\n- FY22: Revenue of $34.2 million, gross margin of 57.8%, and EBITDA of $5.9 million (17.3% margin).\n- FY23: Revenue of $39.6 million (15.8% growth), gross margin of 58.9%, and EBITDA of $7.6 million (19.2% margin).\n- FY24: Revenue of $45.8 million (15.7% growth), gross margin of 60.1%, and EBITDA of $9.8 million (21.4% margin).\n\nRelative to industry peers (Meadowlark Imaging Partners, Wrenfield Specialty Clinics, and Brightpath Diagnostic Group):\n- FY24 revenue growth of 15.7% exceeds the peer median of 11.0% by 4.7 percentage points.\n- FY24 gross margin of 60.1% tracks below the peer median of 63.4% by 3.3 percentage points.\n- Peer EV/EBITDA trading multiples show a median of 21.0x.",
+      "evidence": [
+        {
+          "docId": "mgmt-pres",
+          "blockId": "s4-b2",
+          "quote": "FY22 Revenue $34.2m (57.8% gross margin, $5.9m EBITDA at 17.3% margin)."
+        },
+        {
+          "docId": "mgmt-pres",
+          "blockId": "s4-b2",
+          "quote": "FY23 Revenue $39.6m, up 15.8% (58.9% gross margin, $7.6m EBITDA at 19.2% margin)."
+        },
+        {
+          "docId": "mgmt-pres",
+          "blockId": "s4-b2",
+          "quote": "FY24 Revenue $45.8m, up 15.7% (60.1% gross margin, $9.8m EBITDA at 21.4% margin)."
+        }
+      ]
+    },
+    {
+      "id": "portfolio_fit",
+      "heading": "Portfolio Fit & Concentration Impact",
+      "body": "The proposed transaction requires an equity investment based on a $210 million deal size, expanding total portfolio assets under management from $770 million to $980 million.\n\nKey portfolio implications include:\n- Healthcare Services exposure increases from $231 million (30.0% of existing portfolio across Palmetto Diagnostic Group) to $441 million (45.0% post-transaction).\n- Exposure to Industrials declines from 34.9% to 27.4%.\n- Exposure to Fintech declines from 19.5% to 15.3%.\n- Exposure to Consumer declines from 15.6% to 12.2%.\n\nThe 15.0 percentage-point concentration increase requires explicit Investment Committee evaluation against target portfolio allocation limits.",
+      "evidence": []
+    },
+    {
+      "id": "requires_confirmation",
+      "heading": "Key Risks & Diligence Findings Requiring Confirmation",
+      "body": "Two material discrepancies have been identified during crosscheck analysis:\n\nContractual Revenue Durability:\n- Management reports that 80% of FY24 revenue is recurring under multi-year contracts.\n- Review of customer contracts reveals that agreements with Cinderwood Health System ($5.2 million), Thistlebrook Specialty Partners ($4.6 million), and Fenwick Diagnostic Alliance ($4.4 million) contain 30-day termination for convenience clauses.\n- These cancellable agreements represent $14.2 million, or 31.0% of FY24 revenue, leaving only $22.1 million (48.3% of FY24 revenue) protected under multi-year commitments terminable solely for cause.\n\nCap Table and Option Dilution:\n- The May 15, 2026 capitalization table reports 7,850,000 fully diluted shares, reflecting 520,000 issued early employee options.\n- Option grant records show four additional board-approved grants dated between March 18, 2026, and May 9, 2026, totaling 232,000 options (VP Payer Contracting: 68,000; Director of Ambulatory Growth: 58,000; Head of Data & Clinical Analytics: 52,000; VP HR: 54,000).\n- Including these grants increases the fully diluted share count to 8,082,000 shares, resulting in unmodeled dilution of 2.9%.",
+      "evidence": [
+        {
+          "docId": "mgmt-pres",
+          "blockId": "s3-b2",
+          "quote": "Approximately 80% of FY24 revenue is recurring, underpinned by multi-year customer agreements with high renewal rates."
+        },
+        {
+          "docId": "mgmt-pres",
+          "blockId": "s3-b3",
+          "quote": "Revenue mix: Recurring / subscription 80%, Project-based 20%."
+        },
+        {
+          "docId": "contracts",
+          "blockId": "c2-cl2",
+          "quote": "Either party may terminate this Agreement for convenience upon thirty (30) days' prior written notice to the other party."
+        },
+        {
+          "docId": "contracts",
+          "blockId": "c4-cl2",
+          "quote": "Client may terminate this Agreement for any reason or no reason at all upon thirty (30) days' written notice to Provider."
+        },
+        {
+          "docId": "contracts",
+          "blockId": "c6-cl2",
+          "quote": "Client may terminate this Agreement without cause at any time upon thirty (30) days' prior written notice to Provider."
+        },
+        {
+          "docId": "cap-table",
+          "blockId": "total",
+          "quote": "Total fully diluted shares outstanding — 7,850,000 shares — 100.0%."
+        },
+        {
+          "docId": "cap-table",
+          "blockId": "note-1",
+          "quote": "Includes all options issued and outstanding as of the date hereof."
+        },
+        {
+          "docId": "options",
+          "blockId": "g8",
+          "quote": "VP Payer Contracting — 68,000 options — Board approved 2026-03-18 — Strike $9.60."
+        },
+        {
+          "docId": "options",
+          "blockId": "g9",
+          "quote": "Director of Ambulatory Growth — 58,000 options — Board approved 2026-04-02 — Strike $9.60."
+        },
+        {
+          "docId": "options",
+          "blockId": "g10",
+          "quote": "Head of Data & Clinical Analytics — 52,000 options — Board approved 2026-04-25 — Strike $10.20."
+        },
+        {
+          "docId": "options",
+          "blockId": "g11",
+          "quote": "VP Human Resources — 54,000 options — Board approved 2026-05-09 — Strike $10.20."
+        }
+      ]
+    },
+    {
+      "id": "next_steps",
+      "heading": "Next Steps & Workstreams",
+      "body": "To advance diligence and resolve identified discrepancies, the deal team recommends the following actions:\n- Reconcile the fully diluted share count with company legal counsel to reflect the 232,000 board-approved option grants issued between March and May 2026.\n- Review historical customer retention and renewal rates for Cinderwood Health System, Thistlebrook Specialty Partners, and Fenwick Diagnostic Alliance to determine historical churn behavior under 30-day termination provisions.\n- Present portfolio concentration analysis to the Investment Committee to determine whether a 45.0% Healthcare Services weighting requires risk mitigation or syndicate participation.\n- Complete financial and tax diligence to verify margin bridge from FY22 (17.3% EBITDA margin) to FY24 (21.4% EBITDA margin).",
+      "evidence": []
+    }
+  ]
+}

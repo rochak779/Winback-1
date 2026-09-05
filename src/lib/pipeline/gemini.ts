@@ -8,7 +8,7 @@
 // ============================================================================
 
 import { GoogleGenAI } from '@google/genai';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import type { z } from 'zod';
 
@@ -67,7 +67,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 async function readGoldenFixture<T>(purpose: string): Promise<T> {
-  const file = path.join(process.cwd(), 'src', 'data', 'golden', `${purpose}.json`);
+  const file = path.join(process.cwd(), 'src', 'data', 'golden', `${purpose.replace(/:/g, '_')}.json`);
   const raw = readFileSync(file, 'utf-8');
   return JSON.parse(raw) as T;
 }
@@ -184,6 +184,13 @@ export async function generateJson<T>(opts: GenerateJsonOpts<T>): Promise<Genera
     const data = await attempt(prompt, true, true);
     const ms = Date.now() - started;
     logCall({ purpose, model: modelId, ms, inChars: prompt.length, outChars: JSON.stringify(data).length, ok: true });
+    
+    if (process.env.RECORD_GOLDEN === '1') {
+      const dir = path.join(process.cwd(), 'src', 'data', 'golden');
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(path.join(dir, `${purpose.replace(/:/g, '_')}.json`), JSON.stringify(data, null, 2));
+    }
+
     return { data, ms, model: modelId, mock: false };
   } catch (err) {
     const ms = Date.now() - started;

@@ -1,0 +1,123 @@
+{
+  "workstream": "commercial",
+  "confidence": 0.95,
+  "rationale": "Extracted company profile, multi-year financial performance, revenue mix, and key terms from the management presentation.",
+  "profile": {
+    "name": "Kestrelbrook Health Partners",
+    "sector": "Healthcare Services",
+    "hq": "Raleigh, NC",
+    "foundedYear": 2013,
+    "employees": null,
+    "businessSummary": "Kestrelbrook Health Partners operates a network of outpatient diagnostic imaging and specialty care clinics across the Carolinas, serving regional health systems and independent physician groups under long-term service agreements. Founded in 2013 and headquartered in Raleigh, NC, the company has built a differentiated position through clinical quality, physician relationships, and disciplined site selection.",
+    "financials": [
+      {
+        "fy": "FY22",
+        "revenueUsdM": 34.2,
+        "revenueGrowthPct": null,
+        "grossMarginPct": 57.8,
+        "ebitdaUsdM": 5.9,
+        "ebitdaMarginPct": 17.3,
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s4-b2",
+            "quote": "FY22 Revenue $34.2m (57.8% gross margin, $5.9m EBITDA at 17.3% margin)."
+          }
+        ]
+      },
+      {
+        "fy": "FY23",
+        "revenueUsdM": 39.6,
+        "revenueGrowthPct": 15.8,
+        "grossMarginPct": 58.9,
+        "ebitdaUsdM": 7.6,
+        "ebitdaMarginPct": 19.2,
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s4-b2",
+            "quote": "FY23 Revenue $39.6m, up 15.8% (58.9% gross margin, $7.6m EBITDA at 19.2% margin)."
+          }
+        ]
+      },
+      {
+        "fy": "FY24",
+        "revenueUsdM": 45.8,
+        "revenueGrowthPct": 15.7,
+        "grossMarginPct": 60.1,
+        "ebitdaUsdM": 9.8,
+        "ebitdaMarginPct": 21.4,
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s4-b2",
+            "quote": "FY24 Revenue $45.8m, up 15.7% (60.1% gross margin, $9.8m EBITDA at 21.4% margin)."
+          }
+        ]
+      }
+    ],
+    "revenueMix": [
+      {
+        "label": "Recurring / subscription",
+        "pct": 80,
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s3-b3",
+            "quote": "Revenue mix: Recurring / subscription 80%, Project-based 20%."
+          }
+        ]
+      },
+      {
+        "label": "Project-based",
+        "pct": 20,
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s3-b3",
+            "quote": "Revenue mix: Recurring / subscription 80%, Project-based 20%."
+          }
+        ]
+      }
+    ],
+    "contracts": [],
+    "capTable": [],
+    "statedFullyDilutedShares": 7850000,
+    "optionGrants": [],
+    "keyTerms": [
+      {
+        "label": "Recurring Revenue Share",
+        "value": "Approximately 80% of FY24 revenue is recurring, underpinned by multi-year customer agreements with high renewal rates.",
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s3-b2",
+            "quote": "Approximately 80% of FY24 revenue is recurring, underpinned by multi-year customer agreements with high renewal rates."
+          }
+        ]
+      },
+      {
+        "label": "Leadership Tenure",
+        "value": "Senior leadership team averages 13 years in outpatient healthcare operations.",
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s6-b1",
+            "quote": "The senior leadership team averages 13 years in outpatient healthcare operations."
+          }
+        ]
+      },
+      {
+        "label": "Growth Strategy",
+        "value": "Growth strategy centers on same-site volume growth, de novo clinic openings in adjacent Carolinas metros, and selective tuck-in acquisitions of independent specialty practices.",
+        "evidence": [
+          {
+            "docId": "mgmt-pres",
+            "blockId": "s7-b1",
+            "quote": "Growth strategy centers on same-site volume growth, de novo clinic openings in adjacent Carolinas metros, and selective tuck-in acquisitions of independent specialty practices."
+          }
+        ]
+      }
+    ]
+  }
+}

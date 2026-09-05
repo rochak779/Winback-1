@@ -1,0 +1,183 @@
+{
+  "workstream": "legal",
+  "confidence": 1,
+  "rationale": "Extracted customer contract terms, renewal provisions, and termination clauses from customer contracts document.",
+  "profile": {
+    "name": null,
+    "sector": null,
+    "hq": null,
+    "foundedYear": null,
+    "employees": null,
+    "businessSummary": null,
+    "financials": [],
+    "revenueMix": [],
+    "contracts": [
+      {
+        "customer": "Blackwood Regional Health Network",
+        "annualValueUsdM": 8.4,
+        "startDate": "2020-09-01",
+        "termMonths": 60,
+        "autoRenew": true,
+        "cancellationNoticeDays": 180,
+        "cancellationForConvenience": false,
+        "classifiedAsRecurringByMgmt": null,
+        "evidence": [
+          {
+            "docId": "contracts",
+            "blockId": "c1-h",
+            "quote": "Customer: Blackwood Regional Health Network. Effective Date: September 1, 2020. Annual Contract Value: $8.4m."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c1-cl1",
+            "quote": "Initial Term: sixty (60) months from the Effective Date, renewing automatically for successive twenty-four (24) month terms unless either party provides one hundred eighty (180) days' written notice of non-renewal."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c1-cl2",
+            "quote": "Neither party may terminate this Agreement prior to the expiration of the Term except upon the other party's material breach that remains uncured for thirty (30) days following written notice, or upon the other party's insolvency."
+          }
+        ]
+      },
+      {
+        "customer": "Cinderwood Health System",
+        "annualValueUsdM": 5.2,
+        "startDate": "2023-02-01",
+        "termMonths": 24,
+        "autoRenew": false,
+        "cancellationNoticeDays": 30,
+        "cancellationForConvenience": true,
+        "classifiedAsRecurringByMgmt": null,
+        "evidence": [
+          {
+            "docId": "contracts",
+            "blockId": "c2-h",
+            "quote": "Customer: Cinderwood Health System. Effective Date: February 1, 2023. Annual Contract Value: $5.2m."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c2-cl1",
+            "quote": "Initial Term: twenty-four (24) months from the Effective Date."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c2-cl2",
+            "quote": "Either party may terminate this Agreement for convenience upon thirty (30) days' prior written notice to the other party."
+          }
+        ]
+      },
+      {
+        "customer": "Amber Creek Physician Alliance",
+        "annualValueUsdM": 7.1,
+        "startDate": "2021-11-01",
+        "termMonths": 48,
+        "autoRenew": true,
+        "cancellationNoticeDays": 120,
+        "cancellationForConvenience": false,
+        "classifiedAsRecurringByMgmt": null,
+        "evidence": [
+          {
+            "docId": "contracts",
+            "blockId": "c3-h",
+            "quote": "Customer: Amber Creek Physician Alliance. Effective Date: November 1, 2021. Annual Contract Value: $7.1m."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c3-cl1",
+            "quote": "Initial Term: forty-eight (48) months from the Effective Date, renewing automatically for successive twelve (12) month terms absent one hundred twenty (120) days' written notice of non-renewal."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c3-cl2",
+            "quote": "This Agreement may be terminated prior to the end of the Term only for the other party's uncured material breach or a change of control not approved in advance."
+          }
+        ]
+      },
+      {
+        "customer": "Thistlebrook Specialty Partners",
+        "annualValueUsdM": 4.6,
+        "startDate": "2023-07-01",
+        "termMonths": 24,
+        "autoRenew": false,
+        "cancellationNoticeDays": 30,
+        "cancellationForConvenience": true,
+        "classifiedAsRecurringByMgmt": null,
+        "evidence": [
+          {
+            "docId": "contracts",
+            "blockId": "c4-h",
+            "quote": "Customer: Thistlebrook Specialty Partners. Effective Date: July 1, 2023. Annual Contract Value: $4.6m."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c4-cl1",
+            "quote": "Initial Term: twenty-four (24) months from the Effective Date."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c4-cl2",
+            "quote": "Client may terminate this Agreement for any reason or no reason at all upon thirty (30) days' written notice to Provider."
+          }
+        ]
+      },
+      {
+        "customer": "Sable Point Medical Group",
+        "annualValueUsdM": 6.6,
+        "startDate": "2022-03-01",
+        "termMonths": 36,
+        "autoRenew": true,
+        "cancellationNoticeDays": 90,
+        "cancellationForConvenience": false,
+        "classifiedAsRecurringByMgmt": null,
+        "evidence": [
+          {
+            "docId": "contracts",
+            "blockId": "c5-h",
+            "quote": "Customer: Sable Point Medical Group. Effective Date: March 1, 2022. Annual Contract Value: $6.6m."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c5-cl1",
+            "quote": "Initial Term: thirty-six (36) months from the Effective Date, renewing automatically for successive twelve (12) month terms unless either party provides ninety (90) days' written notice of non-renewal."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c5-cl2",
+            "quote": "Termination prior to the end of the Term is permitted only upon the other party's uncured material breach following thirty (30) days' written notice and opportunity to cure."
+          }
+        ]
+      },
+      {
+        "customer": "Fenwick Diagnostic Alliance",
+        "annualValueUsdM": 4.4,
+        "startDate": "2023-10-01",
+        "termMonths": 24,
+        "autoRenew": false,
+        "cancellationNoticeDays": 30,
+        "cancellationForConvenience": true,
+        "classifiedAsRecurringByMgmt": null,
+        "evidence": [
+          {
+            "docId": "contracts",
+            "blockId": "c6-h",
+            "quote": "Customer: Fenwick Diagnostic Alliance. Effective Date: October 1, 2023. Annual Contract Value: $4.4m."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c6-cl1",
+            "quote": "Initial Term: twenty-four (24) months from the Effective Date."
+          },
+          {
+            "docId": "contracts",
+            "blockId": "c6-cl2",
+            "quote": "Client may terminate this Agreement without cause at any time upon thirty (30) days' prior written notice to Provider."
+          }
+        ]
+      }
+    ],
+    "capTable": [],
+    "statedFullyDilutedShares": null,
+    "optionGrants": [],
+    "keyTerms": []
+  }
+}

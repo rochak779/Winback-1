@@ -1,0 +1,66 @@
+{
+  "status": "contradiction_found",
+  "claim": {
+    "text": "Approximately 80% of FY24 revenue is recurring, underpinned by multi-year customer agreements.",
+    "evidence": [
+      {
+        "docId": "mgmt-pres",
+        "blockId": "s3-b2",
+        "quote": "Approximately 80% of FY24 revenue is recurring, underpinned by multi-year customer agreements with high renewal rates."
+      },
+      {
+        "docId": "mgmt-pres",
+        "blockId": "s3-b3",
+        "quote": "Revenue mix: Recurring / subscription 80%, Project-based 20%."
+      }
+    ]
+  },
+  "counterEvidence": [
+    {
+      "docId": "contracts",
+      "blockId": "c2-h",
+      "quote": "Customer: Cinderwood Health System. Effective Date: February 1, 2023. Annual Contract Value: $5.2m."
+    },
+    {
+      "docId": "contracts",
+      "blockId": "c2-cl2",
+      "quote": "Either party may terminate this Agreement for convenience upon thirty (30) days' prior written notice to the other party."
+    },
+    {
+      "docId": "contracts",
+      "blockId": "c4-h",
+      "quote": "Customer: Thistlebrook Specialty Partners. Effective Date: July 1, 2023. Annual Contract Value: $4.6m."
+    },
+    {
+      "docId": "contracts",
+      "blockId": "c4-cl2",
+      "quote": "Client may terminate this Agreement for any reason or no reason at all upon thirty (30) days' written notice to Provider."
+    },
+    {
+      "docId": "contracts",
+      "blockId": "c6-h",
+      "quote": "Customer: Fenwick Diagnostic Alliance. Effective Date: October 1, 2023. Annual Contract Value: $4.4m."
+    },
+    {
+      "docId": "contracts",
+      "blockId": "c6-cl2",
+      "quote": "Client may terminate this Agreement without cause at any time upon thirty (30) days' prior written notice to Provider."
+    },
+    {
+      "docId": "mgmt-pres",
+      "blockId": "s4-b2",
+      "quote": "FY24 Revenue $45.8m, up 15.7% (60.1% gross margin, $9.8m EBITDA at 21.4% margin)."
+    }
+  ],
+  "explanation": "Management states that 80% of FY24 revenue ($45.8m total) is recurring under multi-year customer agreements. While the six customer contracts have aggregate annual contract value of $36.3m, three of these agreements—Cinderwood ($5.2m), Thistlebrook ($4.6m), and Fenwick ($4.4m)—permit termination for convenience, without cause, or for any reason upon 30 days' notice. These short-notice terminable contracts account for $14.2m, or 31.0% of FY24 revenue, leaving only $22.1m (48.3% of FY24 revenue) contractually committed under multi-year terms terminable only for cause.",
+  "quantification": {
+    "label": "Short-notice terminable revenue percentage vs. claimed recurring revenue",
+    "claimedValue": 80,
+    "observedValue": 31,
+    "unit": "%",
+    "note": "Contracts with Cinderwood ($5.2m), Thistlebrook ($4.6m), and Fenwick ($4.4m) total $14.2m of the $45.8m FY24 revenue (31.0%) and allow termination on 30 days' notice without penalty, reducing truly committed recurring revenue to 48.3% ($22.1m)."
+  },
+  "severityHint": "high",
+  "suggestedMemoLanguage": "Although management presents 80% of revenue as recurring under multi-year contracts, agreements representing $14.2m (31.0% of FY24 revenue) permit client termination on 30 days' notice without cause or penalty.",
+  "modelConfidence": 0.95
+}

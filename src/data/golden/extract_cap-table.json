@@ -1,0 +1,111 @@
+{
+  "workstream": "legal",
+  "confidence": 1,
+  "rationale": "Extracted capitalization table, fully diluted share count, and footnote basis from the capitalization table document.",
+  "profile": {
+    "name": null,
+    "sector": null,
+    "hq": null,
+    "foundedYear": null,
+    "employees": null,
+    "businessSummary": null,
+    "financials": [],
+    "revenueMix": [],
+    "contracts": [],
+    "capTable": [
+      {
+        "holder": "Dana Whitfield (Founder & CEO)",
+        "securityClass": "Common",
+        "shares": 2900000,
+        "pctFullyDiluted": 36.9,
+        "evidence": [
+          {
+            "docId": "cap-table",
+            "blockId": "row-1",
+            "quote": "Dana Whitfield (Founder & CEO) — Common — 2,900,000 shares — 36.9% fully diluted."
+          }
+        ]
+      },
+      {
+        "holder": "Marcus Ellery (Founder & COO)",
+        "securityClass": "Common",
+        "shares": 1750000,
+        "pctFullyDiluted": 22.3,
+        "evidence": [
+          {
+            "docId": "cap-table",
+            "blockId": "row-2",
+            "quote": "Marcus Ellery (Founder & COO) — Common — 1,750,000 shares — 22.3% fully diluted."
+          }
+        ]
+      },
+      {
+        "holder": "Cascade Growth Partners",
+        "securityClass": "Series A Preferred",
+        "shares": 1250000,
+        "pctFullyDiluted": 15.9,
+        "evidence": [
+          {
+            "docId": "cap-table",
+            "blockId": "row-3",
+            "quote": "Cascade Growth Partners — Series A Preferred — 1,250,000 shares — 15.9% fully diluted."
+          }
+        ]
+      },
+      {
+        "holder": "Redwood Capital Partners",
+        "securityClass": "Series A Preferred",
+        "shares": 780000,
+        "pctFullyDiluted": 9.9,
+        "evidence": [
+          {
+            "docId": "cap-table",
+            "blockId": "row-4",
+            "quote": "Redwood Capital Partners — Series A Preferred — 780,000 shares — 9.9% fully diluted."
+          }
+        ]
+      },
+      {
+        "holder": "Option pool (reserved, unissued)",
+        "securityClass": "Option pool (reserved, unissued)",
+        "shares": 650000,
+        "pctFullyDiluted": 8.3,
+        "evidence": [
+          {
+            "docId": "cap-table",
+            "blockId": "row-5",
+            "quote": "Option pool (reserved, unissued) — 650,000 shares — 8.3% fully diluted."
+          }
+        ]
+      },
+      {
+        "holder": "Early employee options (issued)",
+        "securityClass": "Early employee options (issued)",
+        "shares": 520000,
+        "pctFullyDiluted": 6.6,
+        "evidence": [
+          {
+            "docId": "cap-table",
+            "blockId": "row-6",
+            "quote": "Early employee options (issued) — 520,000 shares — 6.6% fully diluted."
+          }
+        ]
+      }
+    ],
+    "statedFullyDilutedShares": 7850000,
+    "optionGrants": [],
+    "keyTerms": [
+      {
+        "label": "Fully diluted shares basis",
+        "value": "Includes all options issued and outstanding as of the date hereof.",
+        "evidence": [
+          {
+            "docId": "cap-table",
+            "blockId": "note-1",
+            "quote": "Includes all options issued and outstanding as of the date hereof."
+          }
+        ]
+      }
+    ]
+  }
+}
