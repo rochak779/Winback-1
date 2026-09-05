@@ -43,9 +43,15 @@ export type ModelEvidenceRef = z.infer<typeof ModelEvidenceRefSchema>;
  * The model never sets `page` or `quoteVerified` — validateEvidence()
  * overwrites both unconditionally. This just satisfies the full EvidenceRef
  * shape so the raw model output can flow straight into validateEvidence().
+ *
+ * Models sometimes copy the bracketed prompt token verbatim (`"[s4-b2]"`
+ * instead of `"s4-b2"`) despite the schema description asking for the bare
+ * id — strip a leading/trailing bracket defensively rather than let a
+ * perfectly good citation get dropped over formatting.
  */
 export function toEvidenceRef(raw: ModelEvidenceRef): EvidenceRef {
-  return { ...raw, page: 0, quoteVerified: false };
+  const blockId = raw.blockId.trim().replace(/^\[|\]$/g, '');
+  return { ...raw, blockId, page: 0, quoteVerified: false };
 }
 
 export function evidenceArraySchema(description: string): Schema {
