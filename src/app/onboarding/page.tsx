@@ -19,6 +19,18 @@ interface InviteRow {
   link: string;
 }
 
+interface TrackedCompany {
+  id: string;
+  name: string;
+  files: string[];
+}
+
+const DOCUMENT_ACCEPT =
+  '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,application/pdf,application/msword,' +
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,' +
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,' +
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain';
+
 export default function OnboardingPage() {
   const router = useRouter();
   const supabase = createBrowserSupabaseClient();
@@ -31,6 +43,8 @@ export default function OnboardingPage() {
   const [inviteRole, setInviteRole] = useState<'admin' | 'member'>('member');
   const [invites, setInvites] = useState<InviteRow[]>([]);
   const [companyName, setCompanyName] = useState('');
+  const [trackedCompanies, setTrackedCompanies] = useState<TrackedCompany[]>([]);
+  const [uploadingFor, setUploadingFor] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function handleDetails(e: React.FormEvent) {
@@ -76,19 +90,49 @@ export default function OnboardingPage() {
     }
   }
 
-  async function handleUpload(e: React.FormEvent) {
-    e.preventDefault();
-    if (!orgId) return;
+  async function handleAddCompany() {
+    if (!orgId || !companyName.trim()) return;
     setError(null);
     try {
-      if (companyName.trim()) {
-        const { error: insertError } = await supabase.from('companies').insert({ org_id: orgId, name: companyName.trim() });
-        if (insertError) throw new Error(insertError.message);
-      }
-      router.push('/');
+      const { data, error: insertError } = await supabase
+        .from('companies')
+        .insert({ org_id: orgId, name: companyName.trim() })
+        .select()
+        .single();
+      if (insertError || !data) throw new Error(insertError?.message ?? 'Failed to create company');
+      setTrackedCompanies((prev) => [...prev, { id: data.id, name: data.name, files: [] }]);
+      setCompanyName('');
     } catch {
-      setError('Could not save. Try again.');
+      setError('Could not add the company. Try again.');
     }
+  }
+
+  async function handleUploadFiles(companyId: string, fileList: FileList | null) {
+    if (!fileList || fileList.length === 0 || !orgId) return;
+    setUploadingFor(companyId);
+    setError(null);
+    try {
+      for (const file of Array.from(fileList)) {
+        const path = `${orgId}/${companyId}/${file.name}`;
+        const { error: uploadError } = await supabase.storage.from('company-documents').upload(path, file, { upsert: true });
+        if (uploadError) throw new Error(uploadError.message);
+      }
+      const names = Array.from(fileList).map((file) => file.name);
+      setTrackedCompanies((prev) =>
+        prev.map((company) =>
+          company.id === companyId ? { ...company, files: [...company.files, ...names] } : company,
+        ),
+      );
+    } catch {
+      setError('Could not upload the file. Try again.');
+    } finally {
+      setUploadingFor(null);
+    }
+  }
+
+  function handleFinish(e: React.FormEvent) {
+    e.preventDefault();
+    router.push('/');
   }
 
   return (
@@ -155,12 +199,54 @@ export default function OnboardingPage() {
           )}
 
           {step === 'upload' && (
-            <form className="space-y-4" onSubmit={handleUpload}>
+            <form className="space-y-4" onSubmit={handleFinish}>
               <div className="space-y-2">
-                <Label htmlFor="companyName">A company to track (optional)</Label>
-                {/* File upload to Supabase Storage is deferred — see docs/superpowers/specs/2026-09-05-auth-onboarding-foundation-design.md */}
-                <Input id="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. a portfolio company name" />
+                <Label htmlFor="companyName">Add a company to track (optional)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="companyName"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="e.g. a portfolio company name"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddCompany();
+                      }
+                    }}
+                  />
+                  <Button type="button" onClick={handleAddCompany}>Add</Button>
+                </div>
               </div>
+
+              {trackedCompanies.length > 0 && (
+                <ul className="space-y-3">
+                  {trackedCompanies.map((company) => (
+                    <li key={company.id} className="space-y-2 rounded border p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">{company.name}</span>
+                        <Input
+                          type="file"
+                          multiple
+                          accept={DOCUMENT_ACCEPT}
+                          className="w-auto max-w-56"
+                          disabled={uploadingFor === company.id}
+                          onChange={(e) => handleUploadFiles(company.id, e.target.files)}
+                        />
+                      </div>
+                      {uploadingFor === company.id && <p className="text-xs text-muted-foreground">Uploading…</p>}
+                      {company.files.length > 0 && (
+                        <ul className="space-y-1 text-xs text-muted-foreground">
+                          {company.files.map((fileName) => (
+                            <li key={fileName}>{fileName}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
               {error && <p className="text-sm text-destructive">{error}</p>}
               <Button type="submit">Finish</Button>
             </form>
