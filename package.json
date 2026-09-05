@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "validate:data": "tsx scripts/validate-data.ts",
     "record:golden": "tsx scripts/record-golden.ts"
   },
