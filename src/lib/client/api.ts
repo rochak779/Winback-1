@@ -9,11 +9,22 @@
 // ============================================================================
 
 import {
+  BenchmarkResponseSchema,
   CrosscheckResponseSchema,
   DocsResponseSchema,
   ExtractResponseSchema,
+  PortfolioResponseSchema,
 } from '@/lib/contracts/schemas';
-import type { ApiError, CompanyProfile, DecisionResult, ExtractionResult, SourceDoc, SourceDocId } from '@/lib/contracts/types';
+import type {
+  ApiError,
+  BenchmarkResult,
+  CompanyProfile,
+  DecisionResult,
+  ExtractionResult,
+  PortfolioImpact,
+  SourceDoc,
+  SourceDocId,
+} from '@/lib/contracts/types';
 import type { RunAction } from '@/lib/store/RunProvider';
 
 type Dispatch = (action: RunAction) => void;
@@ -68,6 +79,52 @@ export async function runExtract(dispatch: Dispatch, docIds: SourceDocId[]): Pro
     return parsed.data.data;
   } catch {
     dispatch({ type: 'STAGE_ERROR', stage: 'extract', error: NETWORK_ERROR });
+    return null;
+  }
+}
+
+export async function runBenchmark(dispatch: Dispatch, profile: CompanyProfile): Promise<BenchmarkResult | null> {
+  dispatch({ type: 'STAGE_START', stage: 'benchmark' });
+  try {
+    const json = await postJson('/api/benchmark', { profile });
+    const parsed = BenchmarkResponseSchema.safeParse(json);
+    if (!parsed.success) {
+      dispatch({ type: 'STAGE_ERROR', stage: 'benchmark', error: CONTRACT_ERROR });
+      return null;
+    }
+    if (!parsed.data.ok) {
+      dispatch({ type: 'STAGE_ERROR', stage: 'benchmark', error: parsed.data.error });
+      return null;
+    }
+    dispatch({ type: 'STAGE_SUCCESS', stage: 'benchmark', payload: parsed.data.data, meta: parsed.data.meta });
+    return parsed.data.data;
+  } catch {
+    dispatch({ type: 'STAGE_ERROR', stage: 'benchmark', error: NETWORK_ERROR });
+    return null;
+  }
+}
+
+export async function runPortfolio(
+  dispatch: Dispatch,
+  profile: CompanyProfile,
+  dealSizeUsdM: number,
+): Promise<PortfolioImpact | null> {
+  dispatch({ type: 'STAGE_START', stage: 'portfolio' });
+  try {
+    const json = await postJson('/api/portfolio', { profile, dealSizeUsdM });
+    const parsed = PortfolioResponseSchema.safeParse(json);
+    if (!parsed.success) {
+      dispatch({ type: 'STAGE_ERROR', stage: 'portfolio', error: CONTRACT_ERROR });
+      return null;
+    }
+    if (!parsed.data.ok) {
+      dispatch({ type: 'STAGE_ERROR', stage: 'portfolio', error: parsed.data.error });
+      return null;
+    }
+    dispatch({ type: 'STAGE_SUCCESS', stage: 'portfolio', payload: parsed.data.data, meta: parsed.data.meta });
+    return parsed.data.data;
+  } catch {
+    dispatch({ type: 'STAGE_ERROR', stage: 'portfolio', error: NETWORK_ERROR });
     return null;
   }
 }
