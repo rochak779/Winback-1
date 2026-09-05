@@ -27,7 +27,9 @@ export default function SignInForm() {
       setError(signInError.message);
       return;
     }
-    router.push(searchParams.get('next') ?? '/');
+    // Only same-origin relative paths — never an attacker-supplied absolute URL.
+    const next = searchParams.get('next');
+    router.push(next && next.startsWith('/') && !next.startsWith('//') ? next : '/');
   }
 
   return (

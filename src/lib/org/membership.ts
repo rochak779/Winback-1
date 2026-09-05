@@ -1,5 +1,6 @@
 export interface SupabaseLike {
-  from(table: string): { select: (...args: any[]) => any; insert: (...args: any[]) => any };
+  from(table: string): { select: (...args: unknown[]) => unknown; insert: (...args: unknown[]) => unknown };
+  rpc(fn: string, args: Record<string, unknown>): Promise<{ data: unknown; error: { message: string } | null }>;
 }
 
 export interface OrgMembership {
@@ -17,8 +18,8 @@ interface OrgMemberRow {
 export async function getUserOrgs(supabase: SupabaseLike, userId: string): Promise<OrgMembership[]> {
   const { data, error } = await (supabase
     .from('org_members')
-    .select('org_id, role, orgs(name)') as any as {
-      eq: (col: string, val: string) => { data: OrgMemberRow[] | null; error: unknown };
+    .select('org_id, role, orgs(name)') as never as {
+      eq: (col: string, val: string) => Promise<{ data: OrgMemberRow[] | null; error: unknown }>;
     }).eq('user_id', userId);
   if (error || !data) return [];
   return data.map((row) => ({ orgId: row.org_id, orgName: row.orgs.name, role: row.role }));
@@ -29,17 +30,11 @@ export async function createOrgForUser(
   userId: string,
   name: string,
 ): Promise<{ orgId: string }> {
-  const orgInsert = supabase.from('orgs').insert({ name }) as any as {
-    select: () => { single: () => { data: { id: string } | null; error: unknown } };
-  };
-  const { data: org, error: orgError } = orgInsert.select().single();
-  if (orgError || !org) throw new Error('Failed to create org');
-
-  const memberInsert = supabase.from('org_members').insert({ org_id: org.id, user_id: userId, role: 'admin' }) as any as {
-    data: unknown;
-    error: unknown;
-  };
-  if (memberInsert.error) throw new Error('Failed to create admin membership');
-
-  return { orgId: org.id };
+  // Org + first admin membership are created atomically by the `create_org`
+  // SECURITY DEFINER RPC (supabase/migrations/0002_fix_rls_and_atomicity.sql).
+  // `userId` is not passed: the RPC uses auth.uid() so the caller cannot spoof it.
+  void userId;
+  const { data, error } = await supabase.rpc('create_org', { p_name: name });
+  if (error || !data) throw new Error('Failed to create org');
+  return { orgId: data as string };
 }

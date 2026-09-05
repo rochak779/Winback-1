@@ -1,5 +1,5 @@
 export interface InvitesSupabaseLike {
-  from(table: string): { insert: (...args: any[]) => any };
+  from(table: string): { insert: (...args: unknown[]) => unknown };
   rpc(fn: string, args: Record<string, unknown>): Promise<{ data: unknown; error: { message: string } | null }>;
 }
 
@@ -26,8 +26,8 @@ export async function createInvite(
     email: input.email,
     role: input.role,
     invited_by: invitedBy,
-  }) as never as { select: () => { single: () => { data: { id: string } | null; error: unknown } } };
-  const { data, error } = insert.select().single();
+  }) as never as { select: () => { single: () => Promise<{ data: { id: string } | null; error: unknown }> } };
+  const { data, error } = await insert.select().single();
   if (error || !data) throw new Error('Failed to create invite');
   return { token: data.id };
 }

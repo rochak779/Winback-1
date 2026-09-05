@@ -3,7 +3,7 @@ import { acceptInvite, createInvite, getInvitePreview } from './invites';
 
 describe('createInvite', () => {
   it('inserts a pending invite and returns its id as the token', async () => {
-    const insert = vi.fn(() => ({ select: () => ({ single: () => ({ data: { id: 'invite-1' }, error: null }) }) }));
+    const insert = vi.fn(() => ({ select: () => ({ single: () => Promise.resolve({ data: { id: 'invite-1' }, error: null }) }) }));
     const supabase = { from: () => ({ insert }), rpc: vi.fn() } as never;
     const result = await createInvite(
       supabase,

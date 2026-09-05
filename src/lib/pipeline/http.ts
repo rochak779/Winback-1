@@ -1,16 +1,16 @@
 // ============================================================================
 // src/lib/pipeline/http.ts
 //
-// Shared shape for every API route (erd.md Part 2 §5). Auth and rate
-// limiting are Lane D / Phase 6 work (explicitly deferred at session 0.3 —
-// "skip Firebase Auth and Firestore for now") and aren't wired in yet; the
-// envelope, zod validation, and error handling are.
+// Shared shape for every API route (erd.md Part 2 §5): the response envelope,
+// zod validation, error handling, rate limiting, and the in-handler auth guard
+// (defense in depth behind the src/proxy.ts matcher).
 // ============================================================================
 
 import { NextResponse } from 'next/server';
 import { z, type ZodType } from 'zod';
 import type { ApiError, ApiMeta, ErrorCode } from '@/lib/contracts/types';
 import { checkRateLimit, RateLimitError } from '@/lib/ratelimit';
+import { getUserId } from '@/lib/auth/session';
 
 function statusForCode(code: ErrorCode): number {
   switch (code) {
@@ -72,11 +72,35 @@ export function validateOwnOutput<T>(schema: ZodType<T>, data: T): NextResponse 
   return apiError('CONTRACT_VIOLATION', 'Server produced a response that failed its own schema');
 }
 
-/** Wraps a route handler with the standard try/catch → INTERNAL error envelope, and applies rate limiting. */
-export async function withRoute(req: Request, routeName: string, type: 'llm' | 'standard', handler: () => Promise<NextResponse>): Promise<NextResponse> {
+export interface WithRouteOptions {
+  /**
+   * Set false only for a handler that performs its own auth check (the
+   * historical graph preview supplies its own `GraphSource.getUserId`).
+   * Every pipeline route leaves this at the default.
+   */
+  requireAuth?: boolean;
+}
+
+/**
+ * Wraps a route handler with the standard try/catch → INTERNAL error envelope,
+ * applies rate limiting, and — by default — requires a signed-in user.
+ */
+export async function withRoute(
+  req: Request,
+  routeName: string,
+  type: 'llm' | 'standard',
+  handler: () => Promise<NextResponse>,
+  options: WithRouteOptions = {},
+): Promise<NextResponse> {
   try {
     const ip = req.headers.get('x-forwarded-for') ?? 'anonymous';
     await checkRateLimit(ip, type);
+    // Defense in depth: src/proxy.ts already blocks anonymous traffic, but every
+    // pipeline route re-checks the session in-handler too.
+    if (options.requireAuth !== false) {
+      const userId = await getUserId();
+      if (!userId) return apiError('UNAUTHORIZED', 'Sign in required');
+    }
     return await handler();
   } catch (err: unknown) {
     if (err instanceof RateLimitError) {

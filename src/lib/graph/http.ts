@@ -35,6 +35,8 @@ export function graphUnavailable() {
 export function createGraphHandler(source: GraphSource, now = Date.now) {
   const cache = new Map<string, { expiresAt: number; graph: KnowledgeGraph }>();
   return async function GET(req: Request) {
+    // requireAuth: false — this handler does its own check via source.getUserId(),
+    // which the historical preview deliberately stubs out (see src/app/api/graph/route.ts).
     const response = await withRoute(req, 'GET /api/graph', 'standard', async () => {
       const started = now();
       const params = new URL(req.url).searchParams;
@@ -68,7 +70,7 @@ export function createGraphHandler(source: GraphSource, now = Date.now) {
       }
       const meta = { ms: now() - started, model: 'none', mock: source.historical ?? false };
       return validateOwnOutput(GraphResponseSchema, { ok: true, data: graph, meta }) ?? apiSuccess(graph, meta);
-    });
+    }, { requireAuth: false });
     response.headers.set('Cache-Control', 'private, no-store');
     return response;
   };

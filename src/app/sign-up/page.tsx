@@ -13,17 +13,25 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setPending(true);
     setError(null);
+    setNotice(null);
     const supabase = createBrowserSupabaseClient();
-    const { error: signUpError } = await supabase.auth.signUp({ email, password });
+    const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
     setPending(false);
     if (signUpError) {
       setError(signUpError.message);
+      return;
+    }
+    // With Supabase's default "confirm email" setting, signUp returns no session
+    // and every protected route would bounce back to /sign-in. Say so instead.
+    if (!data.session) {
+      setNotice('Check your email to confirm your account before signing in.');
       return;
     }
     router.push('/onboarding');
@@ -46,6 +54,7 @@ export default function SignUpPage() {
               <Input id="password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
+            {notice && <p className="text-sm text-muted-foreground">{notice}</p>}
             <Button type="submit" className="w-full" disabled={pending}>
               {pending ? 'Creating account…' : 'Sign up'}
             </Button>

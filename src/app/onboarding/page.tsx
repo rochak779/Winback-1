@@ -35,18 +35,25 @@ export default function OnboardingPage() {
 
   async function handleDetails(e: React.FormEvent) {
     e.preventDefault();
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return;
-    await supabase.from('profiles').upsert({ id: data.user.id, full_name: fullName });
-    setStep('company');
+    setError(null);
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      const { error: upsertError } = await supabase.from('profiles').upsert({ id: data.user.id, full_name: fullName });
+      if (upsertError) throw new Error(upsertError.message);
+      setStep('company');
+    } catch {
+      setError('Could not save. Try again.');
+    }
   }
 
   async function handleCompany(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
     const { data } = await supabase.auth.getUser();
     if (!data.user) return;
     try {
-      const { orgId: newOrgId } = await createOrgForUser(supabase, data.user.id, orgName);
+      const { orgId: newOrgId } = await createOrgForUser(supabase as never, data.user.id, orgName);
       setOrgId(newOrgId);
       setStep('invite');
     } catch {
@@ -56,21 +63,32 @@ export default function OnboardingPage() {
 
   async function handleAddInvite() {
     if (!orgId || !inviteEmail) return;
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return;
-    const { token } = await createInvite(supabase as never, { orgId, email: inviteEmail, role: inviteRole }, data.user.id);
-    const link = `${window.location.origin}/invite/${token}`;
-    setInvites((prev) => [...prev, { email: inviteEmail, role: inviteRole, link }]);
-    setInviteEmail('');
+    setError(null);
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      const { token } = await createInvite(supabase as never, { orgId, email: inviteEmail, role: inviteRole }, data.user.id);
+      const link = `${window.location.origin}/invite/${token}`;
+      setInvites((prev) => [...prev, { email: inviteEmail, role: inviteRole, link }]);
+      setInviteEmail('');
+    } catch {
+      setError('Could not save. Try again.');
+    }
   }
 
   async function handleUpload(e: React.FormEvent) {
     e.preventDefault();
     if (!orgId) return;
-    if (companyName.trim()) {
-      await supabase.from('companies').insert({ org_id: orgId, name: companyName.trim() });
+    setError(null);
+    try {
+      if (companyName.trim()) {
+        const { error: insertError } = await supabase.from('companies').insert({ org_id: orgId, name: companyName.trim() });
+        if (insertError) throw new Error(insertError.message);
+      }
+      router.push('/');
+    } catch {
+      setError('Could not save. Try again.');
     }
-    router.push('/');
   }
 
   return (
@@ -81,7 +99,7 @@ export default function OnboardingPage() {
             {step === 'details' && 'Your details'}
             {step === 'company' && 'Company details'}
             {step === 'invite' && 'Invite teammates'}
-            {step === 'upload' && 'Upload documents'}
+            {step === 'upload' && 'Companies to track'}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -91,6 +109,7 @@ export default function OnboardingPage() {
                 <Label htmlFor="fullName">Full name</Label>
                 <Input id="fullName" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
               </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
               <Button type="submit">Continue</Button>
             </form>
           )}
@@ -127,6 +146,7 @@ export default function OnboardingPage() {
                   </li>
                 ))}
               </ul>
+              {error && <p className="text-sm text-destructive">{error}</p>}
               <div className="flex justify-between">
                 <Button variant="outline" onClick={() => setStep('upload')}>Skip</Button>
                 <Button onClick={() => setStep('upload')}>Continue</Button>
@@ -138,8 +158,10 @@ export default function OnboardingPage() {
             <form className="space-y-4" onSubmit={handleUpload}>
               <div className="space-y-2">
                 <Label htmlFor="companyName">A company to track (optional)</Label>
+                {/* File upload to Supabase Storage is deferred — see docs/superpowers/specs/2026-09-05-auth-onboarding-foundation-design.md */}
                 <Input id="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. a portfolio company name" />
               </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
               <Button type="submit">Finish</Button>
             </form>
           )}

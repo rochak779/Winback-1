@@ -5,13 +5,22 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 import { Stepper } from '@/components/app-shell/stepper';
 import { useIsMockRun, useRun } from '@/lib/store/RunProvider';
 
 export function Header() {
   const { run } = useRun();
   const isMock = useIsMockRun();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await createBrowserSupabaseClient().auth.signOut();
+    router.push('/sign-in');
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/75">
@@ -27,6 +36,9 @@ export function Header() {
             MOCK
           </Badge>
         )}
+        <Button variant="ghost" size="sm" className="shrink-0" onClick={handleSignOut}>
+          Sign out
+        </Button>
       </div>
     </header>
   );

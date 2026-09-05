@@ -10,10 +10,11 @@ describe('getUserOrgs', () => {
     const supabase = fakeSupabase({
       from: () => ({
         select: () => ({
-          eq: () => ({
-            data: [{ org_id: 'org-1', role: 'admin', orgs: { name: 'Acme' } }],
-            error: null,
-          }),
+          eq: () =>
+            Promise.resolve({
+              data: [{ org_id: 'org-1', role: 'admin', orgs: { name: 'Acme' } }],
+              error: null,
+            }),
         }),
       }),
     });
@@ -24,14 +25,18 @@ describe('getUserOrgs', () => {
 });
 
 describe('createOrgForUser', () => {
-  it('inserts the org then an admin membership row', async () => {
-    const insertedOrg = { insert: vi.fn(() => ({ select: () => ({ single: () => ({ data: { id: 'org-2' }, error: null }) }) })) };
-    const insertedMember = { insert: vi.fn(() => ({ data: null, error: null })) };
-    const supabase = fakeSupabase({
-      from: (table: string) => (table === 'orgs' ? insertedOrg : insertedMember),
-    });
+  it('creates the org and its first admin membership via the atomic create_org RPC', async () => {
+    const rpc = vi.fn(() => Promise.resolve({ data: 'org-2', error: null }));
+    const supabase = fakeSupabase({ rpc });
     const result = await createOrgForUser(supabase, 'user-1', 'Acme');
     expect(result).toEqual({ orgId: 'org-2' });
-    expect(insertedMember.insert).toHaveBeenCalledWith({ org_id: 'org-2', user_id: 'user-1', role: 'admin' });
+    expect(rpc).toHaveBeenCalledWith('create_org', { p_name: 'Acme' });
+  });
+
+  it('throws when the RPC returns an error', async () => {
+    const supabase = fakeSupabase({
+      rpc: vi.fn(() => Promise.resolve({ data: null, error: { message: 'not_authenticated' } })),
+    });
+    await expect(createOrgForUser(supabase, 'user-1', 'Acme')).rejects.toThrow('Failed to create org');
   });
 });
