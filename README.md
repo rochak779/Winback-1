@@ -9,9 +9,7 @@ First-pass diligence is traditionally ~100+ hours of reading across fragmented d
 The application is deployed live on Vercel:
 **[https://winback-1.vercel.app](https://winback-1.vercel.app)**
 
-**Demo Credentials:**
-- **Email:** `demo@example.com`
-- **Password:** Passwordless email-link and Google sign-in supported.
+Sign up at `/sign-up` to create your own account (see [Authentication Setup](#authentication-setup) below).
 
 ## The Two Crosschecks
 
@@ -49,22 +47,22 @@ These findings are surfaced in the Decision screen with inline citations, allowi
                 │
      ┌──────────┴───────────┬─────────────────────┐
      ▼                      ▼                     ▼
- Gemini API          data/ fixtures        Cloud Firestore
+ Gemini API          data/ fixtures        Supabase (Postgres)
  (server-only key)   (static docs)         (auth & persistence)
 ```
 
-**Stateless Routes:** API routes remain stateless with respect to the pipeline. Firestore holds *saved results*, not *in-flight state*. If a route needs the extracted profile, the client sends it. This ensures parallelizability and durability against database outages.
+**Stateless Routes:** API routes remain stateless with respect to the pipeline. Supabase holds *saved results*, not *in-flight state*. If a route needs the extracted profile, the client sends it. This ensures parallelizability and durability against database outages.
 
 **Evidence Model:** Every document is an ordered list of blocks with stable, permanent IDs (e.g., `s4-b2`). The UI resolves evidence references natively without needing secondary network requests.
 
-**Auth + Persistence:** Handled securely via Firebase Auth (session cookies) and Firestore.
+**Auth + Persistence:** Handled via Supabase (Postgres + Auth) — see [Authentication Setup](#authentication-setup) below for the full flow.
 
 ## Phase 6.4 — Knowledge graph
 
 Run `pnpm dev`, then open **[/graph?demo=1](http://localhost:3000/graph?demo=1)** for the
 explicitly labelled historical preview. This change implements only ERD Part 10 / Phase 6.4.
 It reuses the existing app shell, run store and shared evidence drawer; it does not implement
-authentication, Firestore persistence, audit, or other screens.
+audit or other screens. (Authentication and Supabase persistence are covered in [Authentication Setup](#authentication-setup) above.)
 
 - `src/lib/graph/build.ts`: pure, synchronous `buildKnowledgeGraph(sessions, docs)`.
   `GraphSession` is a structural projection of the ERD's persisted session, so a full
@@ -131,12 +129,11 @@ click a block, inspect the cited highlight, close with Esc, then try search, fil
 2. **Evidence refs are validated server-side:** Any reference produced by the LLM is verified against the actual documents server-side. A dead link or hallucinated quote is dropped or downgraded, ensuring the UI cannot render a broken citation.
 3. **Procedure-not-answer prompts:** Crosscheck prompts (see `src/lib/pipeline/prompts/`) state a *procedure* ("Compare management's characterisation of revenue quality against the actual contracts"), not the answer. 
 4. **No verdicts by design:** WinBack states facts, comparisons, and contradictions. It never issues verdicts (e.g., "Do not do this deal"). The analyst stays in the loop with explicit Accept/Dismiss/Edit controls.
-5. **Firestore over Cloud SQL:** Sessions are self-contained JSON documents with no relational queries against them. A document-shaped database was chosen for speed, reliability, and to avoid ORM overhead.
-6. **Documents are never persisted:** WinBack stores derived analysis, not the underlying confidential documents. Documents are static fixtures rehydrated on load.
-7. **Provenance on every statement:** Every generated assertion carries strict provenance (cited vs. derived vs. unsourced). `assertSourced()` runs in dev to enforce this constraint.
-8. **Audit trail as an append-only subcollection:** Written fire-and-forget to avoid blocking the pipeline. An availability-over-completeness tradeoff appropriate for this tier of product.
-9. **`getUserId()` as the single auth surface:** Auth is completely decoupled from the rest of the application logic. If Firebase Auth had to be swapped for Clerk, it would be a 90-minute isolated change.
-10. **Deterministic Knowledge Graph:** The graph is a strict projection of existing data using exact string matching. No fuzzy matching, no LLMs. This restraint prevents false edges, which are fatal in a diligence context.
+5. **Documents are never persisted:** WinBack stores derived analysis, not the underlying confidential documents. Documents are static fixtures rehydrated on load.
+6. **Provenance on every statement:** Every generated assertion carries strict provenance (cited vs. derived vs. unsourced). `assertSourced()` runs in dev to enforce this constraint.
+7. **Audit trail as an append-only subcollection:** Written fire-and-forget to avoid blocking the pipeline. An availability-over-completeness tradeoff appropriate for this tier of product.
+8. **`getUserId()` as the single auth surface:** Auth is completely decoupled from the rest of the application logic. If Supabase Auth had to be swapped for Clerk, it would be a 90-minute isolated change.
+9. **Deterministic Knowledge Graph:** The graph is a strict projection of existing data using exact string matching. No fuzzy matching, no LLMs. This restraint prevents false edges, which are fatal in a diligence context.
 
 ## Run It Yourself
 
@@ -199,7 +196,6 @@ To ensure a high-quality slice of value within the 24-hour build constraints, th
 - **Other diligence workstreams:** Legal, tax, HR, and IT are rendered as disabled "Coming Soon" cards.
 - **Diversification modeling:** Portfolio impact only checks sector concentration, not complex risk-contribution modeling.
 - **General peer benchmarking:** Benchmarking uses exactly 3 fixed comparables and 3 metrics.
-- **Multi-tenancy / org permissions:** Auth is implemented, but there is no org-level sharing or role-based RBAC.
 
 ## Repo Map & Env Vars
 
@@ -217,5 +213,6 @@ To ensure a high-quality slice of value within the 24-hour build constraints, th
 | `MOCK_LLM` | No | Set to `1` to run without API key using local golden fixtures |
 | `RUN_BUDGET_MAX` | No | Global rate limit on LLM calls (default `500`) |
 | `GOOGLE_CLOUD_PROJECT` | Yes | GCP Project ID |
-| `FIREBASE_SERVICE_ACCOUNT_JSON`| Yes | Single-line JSON for Firebase Admin SDK |
-| `NEXT_PUBLIC_FIREBASE_*` | Yes | Public keys for Firebase Client SDK |
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anon/public key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service-role secret key (server-only) |
