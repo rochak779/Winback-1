@@ -227,7 +227,13 @@ const extractionResponseSchema: Schema = {
       type: Type.OBJECT,
       properties: {
         name: nullable({ type: Type.STRING }),
-        sector: nullable({ type: Type.STRING }),
+        sector: nullable({
+          type: Type.STRING,
+          description:
+            'A short standard industry-sector label (2-4 words, e.g. "Healthcare Services"), not a ' +
+            'description of what the company does. This must match the label used for peer companies in a ' +
+            'benchmark comp set, not a paraphrase of the business summary.',
+        }),
         hq: nullable({ type: Type.STRING }),
         foundedYear: nullable({ type: Type.INTEGER }),
         employees: nullable({ type: Type.INTEGER }),
