@@ -33,8 +33,10 @@ export function EvidenceChip({
     <button
       type="button"
       onClick={() => open(refs, index)}
+      aria-label={`View source evidence${label ? `: ${label}` : ''}`}
       className={cn(
-        'inline-flex items-center gap-1 rounded-full bg-evidence px-1.5 py-0.5 text-xs font-medium text-evidence-foreground transition-colors hover:brightness-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+        'inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+        'bg-muted text-muted-foreground border-border hover:border-attention hover:text-attention-foreground active:bg-attention/20 active:text-attention-foreground',
         className,
       )}
     >
