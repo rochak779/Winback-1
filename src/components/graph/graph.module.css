@@ -1,0 +1,27 @@
+.root {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  width: 100%;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: min(70vh, 48rem);
+  min-height: 32rem;
+  background: var(--background);
+  touch-action: none;
+}
+
+.node:focus {
+  outline: none;
+}
+
+.node:focus > path,
+.node[aria-pressed='true'] > path {
+  stroke: var(--ring);
+  stroke-width: 5;
+}
+
+.node:focus > text {
+  visibility: visible;
+}

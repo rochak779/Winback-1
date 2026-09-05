@@ -79,7 +79,7 @@ export function EvidenceDrawer() {
   if (!state) return null;
 
   const ref = state.refs[state.index];
-  const resolved = ref ? resolveEvidence(ref, run.docs) : null;
+  const resolved = ref ? resolveEvidence(ref, state.docs ?? run.docs) : null;
 
   return (
     <Sheet open={open} onOpenChange={(next) => !next && close()}>
