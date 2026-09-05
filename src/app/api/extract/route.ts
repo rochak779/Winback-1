@@ -12,7 +12,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  return withRoute('POST /api/extract', async () => {
+  return withRoute(req, 'POST /api/extract', 'llm', async () => {
     const started = Date.now();
     const parsed = await parseBody(req, ExtractRequestSchema);
     if (!parsed.ok) return parsed.response;

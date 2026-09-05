@@ -10,6 +10,7 @@
 import { NextResponse } from 'next/server';
 import { z, type ZodType } from 'zod';
 import type { ApiError, ApiMeta, ErrorCode } from '@/lib/contracts/types';
+import { checkRateLimit, RateLimitError } from '@/lib/ratelimit';
 
 function statusForCode(code: ErrorCode): number {
   switch (code) {
@@ -27,9 +28,10 @@ function statusForCode(code: ErrorCode): number {
   }
 }
 
-export function apiError(code: ErrorCode, message: string, details?: unknown): NextResponse {
-  const body: { ok: false; error: ApiError } = { ok: false, error: { code, message, details } };
-  return NextResponse.json(body, { status: statusForCode(code) });
+export function apiError(code: ErrorCode, message: string, details?: unknown, retryAfterSec?: number): NextResponse {
+  const body: { ok: false; error: ApiError } = { ok: false, error: { code, message, details, retryAfterSec } };
+  const headers = retryAfterSec ? { 'Retry-After': String(retryAfterSec) } : undefined;
+  return NextResponse.json(body, { status: statusForCode(code), headers });
 }
 
 export function apiSuccess<T>(data: T, meta: ApiMeta, status = 200): NextResponse {
@@ -68,10 +70,17 @@ export function validateOwnOutput<T>(schema: ZodType<T>, data: T): NextResponse 
   return apiError('CONTRACT_VIOLATION', 'Server produced a response that failed its own schema');
 }
 
-/** Wraps a route handler with the standard try/catch → INTERNAL error envelope. */
-export function withRoute(routeName: string, handler: () => Promise<NextResponse>): Promise<NextResponse> {
-  return handler().catch((err: unknown) => {
+/** Wraps a route handler with the standard try/catch → INTERNAL error envelope, and applies rate limiting. */
+export async function withRoute(req: Request, routeName: string, type: 'llm' | 'standard', handler: () => Promise<NextResponse>): Promise<NextResponse> {
+  try {
+    const ip = req.headers.get('x-forwarded-for') ?? 'anonymous';
+    await checkRateLimit(ip, type);
+    return await handler();
+  } catch (err: unknown) {
+    if (err instanceof RateLimitError) {
+      return apiError('RATE_LIMITED', err.message, undefined, err.retryAfterSec);
+    }
     console.error('[winback]', routeName, err);
     return apiError('INTERNAL', 'An unexpected error occurred');
-  });
+  }
 }

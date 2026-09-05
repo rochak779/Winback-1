@@ -12,7 +12,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  return withRoute('POST /api/crosscheck', async () => {
+  return withRoute(req, 'POST /api/crosscheck', 'llm', async () => {
     const started = Date.now();
     const parsed = await parseBody(req, CrosscheckRequestSchema);
     if (!parsed.ok) return parsed.response;

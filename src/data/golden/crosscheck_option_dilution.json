@@ -1,0 +1,56 @@
+{
+  "status": "contradiction_found",
+  "claim": {
+    "text": "Total fully diluted shares outstanding is 7,850,000 shares as of May 15, 2026, which includes all options issued and outstanding as of that date.",
+    "evidence": [
+      {
+        "docId": "cap-table",
+        "blockId": "total",
+        "quote": "Total fully diluted shares outstanding — 7,850,000 shares — 100.0%."
+      },
+      {
+        "docId": "cap-table",
+        "blockId": "note-1",
+        "quote": "Includes all options issued and outstanding as of the date hereof."
+      },
+      {
+        "docId": "cap-table",
+        "blockId": "row-6",
+        "quote": "Early employee options (issued) — 520,000 shares — 6.6% fully diluted."
+      }
+    ]
+  },
+  "counterEvidence": [
+    {
+      "docId": "options",
+      "blockId": "g8",
+      "quote": "VP Payer Contracting — 68,000 options — Board approved 2026-03-18 — Strike $9.60."
+    },
+    {
+      "docId": "options",
+      "blockId": "g9",
+      "quote": "Director of Ambulatory Growth — 58,000 options — Board approved 2026-04-02 — Strike $9.60."
+    },
+    {
+      "docId": "options",
+      "blockId": "g10",
+      "quote": "Head of Data & Clinical Analytics — 52,000 options — Board approved 2026-04-25 — Strike $10.20."
+    },
+    {
+      "docId": "options",
+      "blockId": "g11",
+      "quote": "VP Human Resources — 54,000 options — Board approved 2026-05-09 — Strike $10.20."
+    }
+  ],
+  "explanation": "The capitalization table accounts for 520,000 issued options, which reconciles exactly to grants g1 through g7 approved between 2019 and 2023. However, the option grant register shows four subsequent board-approved grants between March 18, 2026, and May 9, 2026 (g8 through g11), totaling 232,000 options. These approved grants predate the May 15, 2026 capitalization table date and are not accounted for in the issued options or fully diluted share count.",
+  "quantification": {
+    "label": "fully diluted share count",
+    "claimedValue": 7850000,
+    "observedValue": 8082000,
+    "unit": "shares",
+    "note": "Calculated by adding the 232,000 uncounted board-approved option grants (68,000 + 58,000 + 52,000 + 54,000) to the stated fully diluted share count of 7,850,000 shares."
+  },
+  "severityHint": "high",
+  "suggestedMemoLanguage": "The May 15, 2026 capitalization table excludes 232,000 board-approved option grants issued between March and May 2026, understated fully diluted shares by 232,000 (7,850,000 stated versus 8,082,000 actual).",
+  "modelConfidence": 0.95
+}

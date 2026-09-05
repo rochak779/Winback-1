@@ -1,0 +1,175 @@
+{
+  "workstream": "legal",
+  "confidence": 1,
+  "rationale": "Extracted all board-approved option grants from the option grant register.",
+  "profile": {
+    "name": null,
+    "sector": null,
+    "hq": null,
+    "foundedYear": null,
+    "employees": null,
+    "businessSummary": null,
+    "financials": [],
+    "revenueMix": [],
+    "contracts": [],
+    "capTable": [],
+    "statedFullyDilutedShares": null,
+    "optionGrants": [
+      {
+        "grantee": "Director of Imaging Operations",
+        "boardApprovalDate": "2019-05-14",
+        "options": 75000,
+        "strikeUsd": 2.2,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g1",
+            "quote": "Director of Imaging Operations — 75,000 options — Board approved 2019-05-14 — Strike $2.20."
+          }
+        ]
+      },
+      {
+        "grantee": "VP Clinical Affairs",
+        "boardApprovalDate": "2020-02-19",
+        "options": 95000,
+        "strikeUsd": 2.6,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g2",
+            "quote": "VP Clinical Affairs — 95,000 options — Board approved 2020-02-19 — Strike $2.60."
+          }
+        ]
+      },
+      {
+        "grantee": "Controller",
+        "boardApprovalDate": "2020-09-03",
+        "options": 60000,
+        "strikeUsd": 2.85,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g3",
+            "quote": "Controller — 60,000 options — Board approved 2020-09-03 — Strike $2.85."
+          }
+        ]
+      },
+      {
+        "grantee": "Practice Manager — Charlotte",
+        "boardApprovalDate": "2021-04-12",
+        "options": 70000,
+        "strikeUsd": 3.15,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g4",
+            "quote": "Practice Manager — Charlotte — 70,000 options — Board approved 2021-04-12 — Strike $3.15."
+          }
+        ]
+      },
+      {
+        "grantee": "Practice Manager — Greensboro",
+        "boardApprovalDate": "2021-10-27",
+        "options": 68000,
+        "strikeUsd": 3.15,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g5",
+            "quote": "Practice Manager — Greensboro — 68,000 options — Board approved 2021-10-27 — Strike $3.15."
+          }
+        ]
+      },
+      {
+        "grantee": "Compliance & Coding Manager",
+        "boardApprovalDate": "2022-06-08",
+        "options": 72000,
+        "strikeUsd": 3.7,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g6",
+            "quote": "Compliance & Coding Manager — 72,000 options — Board approved 2022-06-08 — Strike $3.70."
+          }
+        ]
+      },
+      {
+        "grantee": "Senior Revenue Cycle Analyst",
+        "boardApprovalDate": "2023-01-16",
+        "options": 80000,
+        "strikeUsd": 4.05,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g7",
+            "quote": "Senior Revenue Cycle Analyst — 80,000 options — Board approved 2023-01-16 — Strike $4.05."
+          }
+        ]
+      },
+      {
+        "grantee": "VP Payer Contracting",
+        "boardApprovalDate": "2026-03-18",
+        "options": 68000,
+        "strikeUsd": 9.6,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g8",
+            "quote": "VP Payer Contracting — 68,000 options — Board approved 2026-03-18 — Strike $9.60."
+          }
+        ]
+      },
+      {
+        "grantee": "Director of Ambulatory Growth",
+        "boardApprovalDate": "2026-04-02",
+        "options": 58000,
+        "strikeUsd": 9.6,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g9",
+            "quote": "Director of Ambulatory Growth — 58,000 options — Board approved 2026-04-02 — Strike $9.60."
+          }
+        ]
+      },
+      {
+        "grantee": "Head of Data & Clinical Analytics",
+        "boardApprovalDate": "2026-04-25",
+        "options": 52000,
+        "strikeUsd": 10.2,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g10",
+            "quote": "Head of Data & Clinical Analytics — 52,000 options — Board approved 2026-04-25 — Strike $10.20."
+          }
+        ]
+      },
+      {
+        "grantee": "VP Human Resources",
+        "boardApprovalDate": "2026-05-09",
+        "options": 54000,
+        "strikeUsd": 10.2,
+        "reflectedInCapTable": null,
+        "evidence": [
+          {
+            "docId": "options",
+            "blockId": "g11",
+            "quote": "VP Human Resources — 54,000 options — Board approved 2026-05-09 — Strike $10.20."
+          }
+        ]
+      }
+    ],
+    "keyTerms": []
+  }
+}

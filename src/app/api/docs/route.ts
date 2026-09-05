@@ -9,10 +9,9 @@ import { apiSuccess, withRoute } from '@/lib/pipeline/http';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
-export const revalidate = 3600;
 
-export async function GET() {
-  return withRoute('GET /api/docs', async () =>
+export async function GET(req: Request) {
+  return withRoute(req, 'GET /api/docs', 'standard', async () =>
     apiSuccess({ docs: TARGET_DOCS }, { ms: 0, model: 'none', mock: false }),
   );
 }
