@@ -26,3 +26,24 @@ export const BENCHMARK_DIRECTION_LABEL: Record<string, string> = {
   inline: 'In line with peer median',
   unknown: 'Not determined',
 };
+
+export const AUDIT_ACTION_LABEL: Record<string, string> = {
+  stage_started: 'Stage started',
+  stage_completed: 'Stage completed',
+  stage_failed: 'Stage failed',
+  statement_generated: 'Statement generated',
+  evidence_dropped: 'Evidence dropped',
+  analyst_accepted: 'Accepted by analyst',
+  analyst_dismissed: 'Dismissed by analyst',
+  analyst_edited: 'Edited by analyst',
+  memo_status_changed: 'Memo status changed',
+  session_created: 'Deal created',
+  session_viewed: 'Deal viewed',
+  session_deleted: 'Deal deleted',
+};
+
+export const ACTOR_LABEL: Record<string, string> = {
+  system: 'System',
+  model: 'Model',
+  analyst: 'Analyst',
+};
