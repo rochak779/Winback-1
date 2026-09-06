@@ -29,7 +29,7 @@ export function Sidebar() {
   }
 
   const items: { label: string; href: string; disabled: boolean }[] = [
-    { label: 'Dashboard', href: '/', disabled: false },
+    { label: 'Dashboard', href: '/dashboard', disabled: false },
     { label: 'New Deal', href: '/plan', disabled: false },
     { label: 'Ingest', href: `/deal/${run.id}/ingest`, disabled: !run.deal },
     { label: 'Analysis', href: `/deal/${run.id}/analysis`, disabled: !run.deal },
@@ -41,7 +41,7 @@ export function Sidebar() {
   return (
     <nav className="flex h-full w-52 shrink-0 flex-col gap-6 border-r bg-background p-4">
       <div className="space-y-1">
-        <Link href="/" className="font-heading text-sm font-semibold tracking-tight">
+        <Link href="/dashboard" className="font-heading text-sm font-semibold tracking-tight">
           WinBack
         </Link>
         {run.deal && <p className="truncate text-xs text-muted-foreground">{run.deal.name}</p>}
@@ -54,7 +54,7 @@ export function Sidebar() {
 
       <ul className="flex-1 space-y-0.5">
         {items.map((item) => {
-          const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+          const active = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href);
           if (item.disabled) {
             return (
               <li key={item.label}>

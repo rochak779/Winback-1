@@ -2,7 +2,7 @@
 // src/components/app-shell/app-shell.tsx
 //
 // Hides the sidebar (and its Sign out button) on public/unauthenticated
-// pages — there's no session yet on /sign-in, /sign-up, /forgot-password,
+// pages — there's no session yet on /, /sign-in, /sign-up, /forgot-password,
 // /reset-password, or /invite/[token], so nav for a signed-in workspace
 // doesn't belong there.
 // ============================================================================
@@ -12,7 +12,7 @@
 import { usePathname } from 'next/navigation';
 import { Sidebar } from '@/components/app-shell/sidebar';
 
-const PUBLIC_PATHS = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password'];
+const PUBLIC_PATHS = ['/', '/sign-in', '/sign-up', '/forgot-password', '/reset-password'];
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.includes(pathname) || pathname.startsWith('/invite/');

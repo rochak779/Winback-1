@@ -39,7 +39,7 @@ export default function SignInForm() {
     }
     // Only same-origin relative paths — never an attacker-supplied absolute URL.
     const next = searchParams.get('next');
-    router.push(next && next.startsWith('/') && !next.startsWith('//') ? next : '/');
+    router.push(next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard');
   }
 
   return (
