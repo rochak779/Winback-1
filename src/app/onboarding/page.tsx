@@ -132,7 +132,7 @@ export default function OnboardingPage() {
 
   function handleFinish(e: React.FormEvent) {
     e.preventDefault();
-    router.push('/');
+    router.push('/dashboard');
   }
 
   return (

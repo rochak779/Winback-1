@@ -26,7 +26,7 @@ export function DealGate({ id, children }: { id: string; children: ReactNode }) 
       dispatch({ type: 'HYDRATE', run: stored });
       recordAuditEvent({ runId: id, action: 'session_viewed', note: 'Reopened from a previous browser session' });
     } else {
-      router.replace('/');
+      router.replace('/dashboard');
     }
     // `dispatch`/`router` are stable — only re-check when the route id or the loaded run actually changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
