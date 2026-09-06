@@ -35,7 +35,7 @@ function sha256Hex(input: string): string {
 }
 
 export async function POST(req: Request) {
-  return withRoute(req, 'POST /api/portfolio', 'llm', async () => {
+  return withRoute(req, 'POST /api/portfolio', 'llm', async (userId) => {
     const started = Date.now();
     const parsed = await parseBody(req, PortfolioRequestSchema);
     if (!parsed.ok) return parsed.response;
