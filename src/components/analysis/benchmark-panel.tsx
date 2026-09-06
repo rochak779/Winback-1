@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { DerivedMarker } from '@/components/audit/derived-marker';
 import { EvidenceChip } from '@/components/evidence/evidence-chip';
 import { BENCHMARK_DIRECTION_LABEL } from '@/lib/labels';
 import { cn } from '@/lib/utils';
@@ -112,7 +113,18 @@ export function BenchmarkPanel({ benchmark }: { benchmark: BenchmarkResult }) {
                       </TableCell>
                     );
                   })}
-                  <TableCell className="text-right tabular-nums text-muted-foreground">{fmtValue(row.peerMedian, row.unit)}</TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">
+                    <span className="inline-flex items-center justify-end gap-1">
+                      {fmtValue(row.peerMedian, row.unit)}
+                      <DerivedMarker
+                        formula={`Median of ${row.peerValues.length} peer values`}
+                        inputs={row.peerValues.map((pv) => {
+                          const peer = benchmark.peers.find((p) => p.id === pv.peerId);
+                          return `${peer?.name ?? pv.peerId}: ${fmtValue(pv.value, row.unit)}`;
+                        })}
+                      />
+                    </span>
+                  </TableCell>
                   <TableCell>
                     <DirectionChip direction={row.direction} />
                   </TableCell>

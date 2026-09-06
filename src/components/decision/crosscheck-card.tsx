@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { DerivedMarker } from '@/components/audit/derived-marker';
 import { EvidenceChip } from '@/components/evidence/evidence-chip';
 import { WORKSTREAM_LABEL, CROSSCHECK_STATUS_LABEL } from '@/lib/labels';
 import { useRun } from '@/lib/store/RunProvider';
@@ -109,9 +110,10 @@ export function CrosscheckCard({ crosscheck }: { crosscheck: Crosscheck }) {
             </div>
             <div>
               <div className="text-xs text-muted-foreground">Observed</div>
-              <div className="font-heading text-2xl tabular-nums">
+              <div className="inline-flex items-center gap-1 font-heading text-2xl tabular-nums">
                 {crosscheck.quantification.observedValue}
                 {crosscheck.quantification.unit}
+                <DerivedMarker formula={crosscheck.quantification.label} inputs={[crosscheck.quantification.note]} />
               </div>
             </div>
             <div>
