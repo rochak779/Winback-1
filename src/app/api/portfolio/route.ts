@@ -12,6 +12,8 @@ import type { ApiMeta, PortfolioImpact } from '@/lib/contracts/types';
 import { apiSuccess, parseBody, validateOwnOutput, withRoute } from '@/lib/pipeline/http';
 import { computeConcentration } from '@/lib/pipeline/portfolio';
 import { generateJson } from '@/lib/pipeline/gemini';
+import { recordAudit, type AuditSupabaseLike } from '@/lib/audit/record';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -40,7 +42,9 @@ export async function POST(req: Request) {
     const parsed = await parseBody(req, PortfolioRequestSchema);
     if (!parsed.ok) return parsed.response;
 
-    const { profile, dealSizeUsdM } = parsed.data;
+    const { runId, profile, dealSizeUsdM } = parsed.data;
+    const supabase = await createServerSupabaseClient();
+    await recordAudit(supabase as unknown as AuditSupabaseLike, { runId, userId, actor: 'system', action: 'stage_started', stage: 'portfolio' });
     const { concentrations, totalBeforeUsdM, totalAfterUsdM } = computeConcentration(
       PORTFOLIO_COMPANIES,
       profile.sector,
@@ -108,6 +112,14 @@ export async function POST(req: Request) {
     if (violation) return violation;
 
     const meta: ApiMeta = { ms: Date.now() - started, model, mock: model === 'mock' };
+    await recordAudit(supabase as unknown as AuditSupabaseLike, [
+      { runId, userId, actor: 'system', action: 'stage_completed', stage: 'portfolio' },
+      {
+        runId, userId, actor: data.provenance.actor, action: 'statement_generated', stage: 'portfolio',
+        statementId: data.statementId, statementText: data.headline ?? 'Portfolio impact computed (no headline — degraded)',
+        provenance: data.provenance,
+      },
+    ]);
     return apiSuccess(data, meta);
   });
 }

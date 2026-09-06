@@ -12,6 +12,8 @@ import type { ApiMeta, BenchmarkResult } from '@/lib/contracts/types';
 import { apiSuccess, parseBody, validateOwnOutput, withRoute } from '@/lib/pipeline/http';
 import { computeBenchmarkRows } from '@/lib/pipeline/benchmark';
 import { generateJson } from '@/lib/pipeline/gemini';
+import { recordAudit, type AuditSupabaseLike } from '@/lib/audit/record';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -40,7 +42,9 @@ export async function POST(req: Request) {
     const parsed = await parseBody(req, BenchmarkRequestSchema);
     if (!parsed.ok) return parsed.response;
 
-    const { profile } = parsed.data;
+    const { runId, profile } = parsed.data;
+    const supabase = await createServerSupabaseClient();
+    await recordAudit(supabase as unknown as AuditSupabaseLike, { runId, userId, actor: 'system', action: 'stage_started', stage: 'benchmark' });
     const peers = PEER_COMPANIES.filter((peer) => peer.sector === profile.sector);
     const rows = computeBenchmarkRows(profile, peers);
 
@@ -101,6 +105,14 @@ export async function POST(req: Request) {
     if (violation) return violation;
 
     const meta: ApiMeta = { ms: Date.now() - started, model, mock: model === 'mock' };
+    await recordAudit(supabase as unknown as AuditSupabaseLike, [
+      { runId, userId, actor: 'system', action: 'stage_completed', stage: 'benchmark' },
+      {
+        runId, userId, actor: data.provenance.actor, action: 'statement_generated', stage: 'benchmark',
+        statementId: data.statementId, statementText: data.commentary ?? `Benchmark computed for ${profile.name} (no commentary — degraded)`,
+        provenance: data.provenance,
+      },
+    ]);
     return apiSuccess(data, meta);
   });
 }
