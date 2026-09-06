@@ -406,6 +406,7 @@ export const StageStatusSchema = z.enum(['idle', 'running', 'done', 'error']);
 export const ErrorCodeSchema = z.enum([
   'BAD_REQUEST',
   'UNAUTHORIZED',
+  'NOT_FOUND',
   'RATE_LIMITED',
   'LLM_ERROR',
   'LLM_TIMEOUT',
@@ -468,17 +469,20 @@ export const RunSchema = z.object({
 
 // --- Request bodies ---------------------------------------------------------
 
-export const ExtractRequestSchema = z.object({ docIds: z.array(SourceDocIdSchema) });
-export const BenchmarkRequestSchema = z.object({ profile: CompanyProfileSchema });
+export const ExtractRequestSchema = z.object({ runId: z.string(), docIds: z.array(SourceDocIdSchema) });
+export const BenchmarkRequestSchema = z.object({ runId: z.string(), profile: CompanyProfileSchema });
 export const PortfolioRequestSchema = z.object({
+  runId: z.string(),
   profile: CompanyProfileSchema,
   dealSizeUsdM: z.number(),
 });
 export const CrosscheckRequestSchema = z.object({
+  runId: z.string(),
   docIds: z.array(SourceDocIdSchema),
   profile: CompanyProfileSchema,
 });
 export const MemoRequestSchema = z.object({
+  runId: z.string(),
   deal: DealSchema,
   profile: CompanyProfileSchema,
   benchmark: BenchmarkResultSchema,
@@ -532,6 +536,40 @@ export const AuditEntrySchema = z.object({
   after: z.string().nullable(),
   note: z.string().nullable(),
 });
+
+// ----------------------------------------------------------------------------
+// Audit trail — client-triggered events and read responses (Phase 6.3)
+// ----------------------------------------------------------------------------
+
+/** Actions a client is trusted to report itself — stage lifecycle and
+ * statement_generated are always server-computed, never accepted from a client. */
+export const AuditClientActionSchema = z.enum([
+  'analyst_accepted',
+  'analyst_dismissed',
+  'analyst_edited',
+  'memo_status_changed',
+  'session_viewed',
+]);
+
+export const AuditEventRequestSchema = z.object({
+  runId: z.string(),
+  action: AuditClientActionSchema,
+  stage: StageSchema.nullable().default(null),
+  statementId: StatementIdSchema.nullable().default(null),
+  statementText: z.string().nullable().default(null),
+  before: z.string().nullable().default(null),
+  after: z.string().nullable().default(null),
+  note: z.string().nullable().default(null),
+});
+
+export const AuditEventResponseSchema = ApiResponseSchema(z.object({ recorded: z.literal(true) }));
+
+export const AuditListResponseSchema = ApiResponseSchema(
+  z.object({
+    entries: z.array(AuditEntrySchema),
+    nextCursor: z.string().nullable(),
+  }),
+);
 
 // ----------------------------------------------------------------------------
 // 3.10 Knowledge graph — a projection of data that already exists.

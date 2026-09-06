@@ -12,6 +12,7 @@
 import { useEffect, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { loadRunFromStorage, useRun } from '@/lib/store/RunProvider';
+import { recordAuditEvent } from '@/lib/client/api';
 
 export function DealGate({ id, children }: { id: string; children: ReactNode }) {
   const { run, dispatch } = useRun();
@@ -23,6 +24,7 @@ export function DealGate({ id, children }: { id: string; children: ReactNode }) 
     const stored = loadRunFromStorage(id);
     if (stored) {
       dispatch({ type: 'HYDRATE', run: stored });
+      recordAuditEvent({ runId: id, action: 'session_viewed', note: 'Reopened from a previous browser session' });
     } else {
       router.replace('/');
     }

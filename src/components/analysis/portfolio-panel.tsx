@@ -9,6 +9,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DerivedMarker } from '@/components/audit/derived-marker';
 import { cn } from '@/lib/utils';
 import type { PortfolioImpact } from '@/lib/contracts/types';
 
@@ -84,7 +85,16 @@ export function PortfolioPanel({ portfolio }: { portfolio: PortfolioImpact }) {
             {portfolio.concentrations.map((c) => (
               <div key={c.sector} className={cn('space-y-1 rounded-lg px-2 py-1.5', c.isTargetSector && 'bg-muted/50 ring-1 ring-border')}>
                 <div className="flex items-center justify-between">
-                  <span className={cn('text-sm', c.isTargetSector ? 'font-semibold' : 'text-muted-foreground')}>{c.sector}</span>
+                  <span className={cn('inline-flex items-center gap-1.5 text-sm', c.isTargetSector ? 'font-semibold' : 'text-muted-foreground')}>
+                    {c.sector}
+                    <DerivedMarker
+                      formula={`${c.sector} share of committed capital: sector total ÷ portfolio total × 100`}
+                      inputs={[
+                        `Before: $${c.beforeUsdM}m ÷ $${portfolio.totalBeforeUsdM}m = ${fmtPct(c.beforePct)}`,
+                        `After: $${c.afterUsdM}m ÷ $${portfolio.totalAfterUsdM}m = ${fmtPct(c.afterPct)}`,
+                      ]}
+                    />
+                  </span>
                   {c.isTargetSector && (
                     <span className="text-xs font-medium tabular-nums text-primary">
                       {c.deltaPct >= 0 ? '+' : ''}

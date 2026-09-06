@@ -49,12 +49,12 @@ export default function AnalysisPage() {
 
   function startBenchmark() {
     if (!profile) return;
-    void runBenchmark(dispatch, profile);
+    void runBenchmark(dispatch, run.id, profile);
   }
 
   function startPortfolio() {
     if (!profile || dealSizeUsdM === null) return;
-    void runPortfolio(dispatch, profile, dealSizeUsdM);
+    void runPortfolio(dispatch, run.id, profile, dealSizeUsdM);
   }
 
   useEffect(() => {

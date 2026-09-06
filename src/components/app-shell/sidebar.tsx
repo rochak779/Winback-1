@@ -34,6 +34,7 @@ export function Sidebar() {
     { label: 'Ingest', href: `/deal/${run.id}/ingest`, disabled: !run.deal },
     { label: 'Analysis', href: `/deal/${run.id}/analysis`, disabled: !run.deal },
     { label: 'Decision', href: `/deal/${run.id}/decision`, disabled: !run.deal },
+    { label: 'Audit Trail', href: `/deal/${run.id}/audit`, disabled: !run.deal },
     { label: 'Knowledge Graph', href: '/graph', disabled: false },
   ];
 

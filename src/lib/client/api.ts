@@ -9,6 +9,7 @@
 // ============================================================================
 
 import {
+  AuditEventResponseSchema,
   BenchmarkResponseSchema,
   CrosscheckResponseSchema,
   DocsResponseSchema,
@@ -18,6 +19,7 @@ import {
 } from '@/lib/contracts/schemas';
 import type {
   ApiError,
+  AuditClientAction,
   BenchmarkResult,
   CompanyProfile,
   Crosscheck,
@@ -28,6 +30,7 @@ import type {
   PortfolioImpact,
   SourceDoc,
   SourceDocId,
+  Stage,
 } from '@/lib/contracts/types';
 import type { RunAction } from '@/lib/store/RunProvider';
 
@@ -66,10 +69,10 @@ export async function fetchDocs(dispatch: Dispatch): Promise<SourceDoc[] | null>
   }
 }
 
-export async function runExtract(dispatch: Dispatch, docIds: SourceDocId[]): Promise<ExtractionResult | null> {
+export async function runExtract(dispatch: Dispatch, runId: string, docIds: SourceDocId[]): Promise<ExtractionResult | null> {
   dispatch({ type: 'STAGE_START', stage: 'extract' });
   try {
-    const json = await postJson('/api/extract', { docIds });
+    const json = await postJson('/api/extract', { runId, docIds });
     const parsed = ExtractResponseSchema.safeParse(json);
     if (!parsed.success) {
       dispatch({ type: 'STAGE_ERROR', stage: 'extract', error: CONTRACT_ERROR });
@@ -87,10 +90,10 @@ export async function runExtract(dispatch: Dispatch, docIds: SourceDocId[]): Pro
   }
 }
 
-export async function runBenchmark(dispatch: Dispatch, profile: CompanyProfile): Promise<BenchmarkResult | null> {
+export async function runBenchmark(dispatch: Dispatch, runId: string, profile: CompanyProfile): Promise<BenchmarkResult | null> {
   dispatch({ type: 'STAGE_START', stage: 'benchmark' });
   try {
-    const json = await postJson('/api/benchmark', { profile });
+    const json = await postJson('/api/benchmark', { runId, profile });
     const parsed = BenchmarkResponseSchema.safeParse(json);
     if (!parsed.success) {
       dispatch({ type: 'STAGE_ERROR', stage: 'benchmark', error: CONTRACT_ERROR });
@@ -110,12 +113,13 @@ export async function runBenchmark(dispatch: Dispatch, profile: CompanyProfile):
 
 export async function runPortfolio(
   dispatch: Dispatch,
+  runId: string,
   profile: CompanyProfile,
   dealSizeUsdM: number,
 ): Promise<PortfolioImpact | null> {
   dispatch({ type: 'STAGE_START', stage: 'portfolio' });
   try {
-    const json = await postJson('/api/portfolio', { profile, dealSizeUsdM });
+    const json = await postJson('/api/portfolio', { runId, profile, dealSizeUsdM });
     const parsed = PortfolioResponseSchema.safeParse(json);
     if (!parsed.success) {
       dispatch({ type: 'STAGE_ERROR', stage: 'portfolio', error: CONTRACT_ERROR });
@@ -135,12 +139,13 @@ export async function runPortfolio(
 
 export async function runCrosscheck(
   dispatch: Dispatch,
+  runId: string,
   docIds: SourceDocId[],
   profile: CompanyProfile,
 ): Promise<DecisionResult | null> {
   dispatch({ type: 'STAGE_START', stage: 'decision' });
   try {
-    const json = await postJson('/api/crosscheck', { docIds, profile });
+    const json = await postJson('/api/crosscheck', { runId, docIds, profile });
     const parsed = CrosscheckResponseSchema.safeParse(json);
     if (!parsed.success) {
       dispatch({ type: 'STAGE_ERROR', stage: 'decision', error: CONTRACT_ERROR });
@@ -160,6 +165,7 @@ export async function runCrosscheck(
 
 export async function runMemo(
   dispatch: Dispatch,
+  runId: string,
   deal: Deal,
   profile: CompanyProfile,
   benchmark: BenchmarkResult,
@@ -168,7 +174,7 @@ export async function runMemo(
 ): Promise<IcMemo | null> {
   dispatch({ type: 'STAGE_START', stage: 'memo' });
   try {
-    const json = await postJson('/api/memo', { deal, profile, benchmark, portfolio, crosschecks });
+    const json = await postJson('/api/memo', { runId, deal, profile, benchmark, portfolio, crosschecks });
     const parsed = MemoResponseSchema.safeParse(json);
     if (!parsed.success) {
       dispatch({ type: 'STAGE_ERROR', stage: 'memo', error: CONTRACT_ERROR });
@@ -184,4 +190,30 @@ export async function runMemo(
     dispatch({ type: 'STAGE_ERROR', stage: 'memo', error: NETWORK_ERROR });
     return null;
   }
+}
+
+/**
+ * Fire-and-forget from the caller's perspective — never awaited, never
+ * throws into the UI. Records an analyst action or a "viewed an old run"
+ * event (erd.md Part 9.1 Guarantee 2's client-originated half).
+ */
+export function recordAuditEvent(input: {
+  runId: string;
+  action: AuditClientAction;
+  stage?: Stage | null;
+  statementId?: string | null;
+  statementText?: string | null;
+  before?: string | null;
+  after?: string | null;
+  note?: string | null;
+}): void {
+  void (async () => {
+    try {
+      const json = await postJson('/api/audit/event', input);
+      AuditEventResponseSchema.safeParse(json); // best-effort only — nothing depends on the shape here
+    } catch {
+      // Never surfaced to the UI — see file header on runExtract et al. for why
+      // this pattern is safe: it's advisory, not part of the pipeline contract.
+    }
+  })();
 }

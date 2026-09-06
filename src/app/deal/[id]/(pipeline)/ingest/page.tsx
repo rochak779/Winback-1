@@ -42,7 +42,7 @@ export default function IngestPage() {
 
   function handleExtract() {
     if (docIds.length === 0) return;
-    void runExtract(dispatch, docIds);
+    void runExtract(dispatch, run.id, docIds);
   }
 
   if (run.docs.length === 0) {

@@ -18,6 +18,8 @@ function statusForCode(code: ErrorCode): number {
       return 400;
     case 'UNAUTHORIZED':
       return 401;
+    case 'NOT_FOUND':
+      return 404;
     case 'RATE_LIMITED':
       return 429;
     case 'LLM_TIMEOUT':
@@ -89,19 +91,19 @@ export async function withRoute(
   req: Request,
   routeName: string,
   type: 'llm' | 'standard',
-  handler: () => Promise<NextResponse>,
+  handler: (userId: string) => Promise<NextResponse>,
   options: WithRouteOptions = {},
 ): Promise<NextResponse> {
   try {
     const ip = req.headers.get('x-forwarded-for') ?? 'anonymous';
     await checkRateLimit(ip, type);
-    // Defense in depth: src/proxy.ts already blocks anonymous traffic, but every
-    // pipeline route re-checks the session in-handler too.
+    let userId = '';
     if (options.requireAuth !== false) {
-      const userId = await getUserId();
-      if (!userId) return apiError('UNAUTHORIZED', 'Sign in required');
+      const id = await getUserId();
+      if (!id) return apiError('UNAUTHORIZED', 'Sign in required');
+      userId = id;
     }
-    return await handler();
+    return await handler(userId);
   } catch (err: unknown) {
     if (err instanceof RateLimitError) {
       return apiError('RATE_LIMITED', err.message, undefined, err.retryAfterSec);
