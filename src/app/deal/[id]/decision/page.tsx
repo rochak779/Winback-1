@@ -24,13 +24,14 @@ export default function DecisionPage() {
 
   function start() {
     if (!run.extraction) return;
-    void runCrosscheck(dispatch, docIds, run.extraction.profile);
+    void runCrosscheck(dispatch, run.id, docIds, run.extraction.profile);
   }
 
   function draftMemo() {
     if (!run.deal || !run.extraction || !run.benchmark || !run.portfolio || !run.decision) return;
     void runMemo(
       dispatch,
+      run.id,
       run.deal,
       run.extraction.profile,
       run.benchmark,
