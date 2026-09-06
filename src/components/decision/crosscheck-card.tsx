@@ -19,6 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { EvidenceChip } from '@/components/evidence/evidence-chip';
 import { WORKSTREAM_LABEL, CROSSCHECK_STATUS_LABEL } from '@/lib/labels';
 import { useRun } from '@/lib/store/RunProvider';
+import { recordAuditEvent } from '@/lib/client/api';
 import type { Crosscheck } from '@/lib/contracts/types';
 
 function statusBadgeClass(status: Crosscheck['status']): string {
@@ -28,16 +29,31 @@ function statusBadgeClass(status: Crosscheck['status']): string {
 }
 
 export function CrosscheckCard({ crosscheck }: { crosscheck: Crosscheck }) {
-  const { dispatch } = useRun();
+  const { run, dispatch } = useRun();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(crosscheck.analystNote ?? crosscheck.suggestedMemoLanguage);
 
   function setDecision(decision: 'accepted' | 'dismissed') {
     dispatch({ type: 'CROSSCHECK_DECISION', crosscheckId: crosscheck.id, decision });
+    recordAuditEvent({
+      runId: run.id,
+      action: decision === 'accepted' ? 'analyst_accepted' : 'analyst_dismissed',
+      stage: 'decision',
+      statementId: crosscheck.statementId,
+      statementText: crosscheck.explanation,
+    });
   }
 
   function saveEdit() {
     dispatch({ type: 'CROSSCHECK_DECISION', crosscheckId: crosscheck.id, decision: 'accepted', note: draft });
+    recordAuditEvent({
+      runId: run.id,
+      action: 'analyst_edited',
+      stage: 'decision',
+      statementId: crosscheck.statementId,
+      before: crosscheck.analystNote ?? crosscheck.suggestedMemoLanguage,
+      after: draft,
+    });
     setEditing(false);
   }
 

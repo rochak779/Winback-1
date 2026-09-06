@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Textarea } from '@/components/ui/textarea';
 import { EvidenceChip } from '@/components/evidence/evidence-chip';
 import { useRun } from '@/lib/store/RunProvider';
+import { recordAuditEvent } from '@/lib/client/api';
 import type { EvidenceRef } from '@/lib/contracts/types';
 
 function MemoSection({
@@ -82,11 +83,23 @@ export function MemoCard() {
   if (!memo) return null;
 
   function editSection(id: string, body: string) {
+    const section = memo?.sections.find((s) => s.id === id);
     dispatch({ type: 'MEMO_EDIT_SECTION', sectionId: id, body });
+    if (section) {
+      recordAuditEvent({
+        runId: run.id,
+        action: 'analyst_edited',
+        stage: 'memo',
+        statementId: section.statementId,
+        before: section.body,
+        after: body,
+      });
+    }
   }
 
   function setStatus(status: 'draft' | 'analyst_edited' | 'approved') {
     dispatch({ type: 'MEMO_STATUS', status });
+    recordAuditEvent({ runId: run.id, action: 'memo_status_changed', stage: 'memo', note: `Memo marked ${status}` });
     toast.success(`Memo marked as ${status.replace('_', ' ')}`);
   }
 
