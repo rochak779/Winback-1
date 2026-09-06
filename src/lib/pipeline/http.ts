@@ -18,6 +18,8 @@ function statusForCode(code: ErrorCode): number {
       return 400;
     case 'UNAUTHORIZED':
       return 401;
+    case 'NOT_FOUND':
+      return 404;
     case 'RATE_LIMITED':
       return 429;
     case 'LLM_TIMEOUT':

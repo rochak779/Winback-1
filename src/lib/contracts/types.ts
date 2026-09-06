@@ -126,6 +126,9 @@ export type MemoResponse = ApiResponse<IcMemo>;
 
 export type AuditAction = z.infer<typeof S.AuditActionSchema>;
 export type AuditEntry = z.infer<typeof S.AuditEntrySchema>;
+export type AuditClientAction = z.infer<typeof S.AuditClientActionSchema>;
+export type AuditEventRequest = z.infer<typeof S.AuditEventRequestSchema>;
+export type AuditListResponse = z.infer<typeof S.AuditListResponseSchema>;
 
 // ----------------------------------------------------------------------------
 // 3.10 Knowledge graph
