@@ -104,45 +104,49 @@ export function AuditTimeline({ runId }: { runId: string }) {
         </Button>
       </div>
 
-      <ul className="space-y-2">
-        {visible.map((entry) => (
-          <li key={entry.id} className="rounded-lg border px-3 py-2">
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span>{new Date(entry.at).toLocaleString()}</span>
-              <Badge variant="outline" className={actorBadgeClass(entry.actor)}>
-                {ACTOR_LABEL[entry.actor]}
-              </Badge>
-              <span>{AUDIT_ACTION_LABEL[entry.action] ?? entry.action}</span>
-              {entry.stage && <span>· {entry.stage}</span>}
-            </div>
-            {entry.statementText && <p className="mt-1 text-sm">{entry.statementText}</p>}
-            {entry.note && <p className="mt-1 text-sm text-muted-foreground">{entry.note}</p>}
-            {(entry.before || entry.after) && (
-              <div className="mt-1 grid grid-cols-2 gap-2 text-xs">
-                {entry.before && (
-                  <p className="text-muted-foreground">
-                    <span className="font-medium">Before:</span> {entry.before}
-                  </p>
-                )}
-                {entry.after && (
-                  <p className="text-muted-foreground">
-                    <span className="font-medium">After:</span> {entry.after}
-                  </p>
-                )}
+      {visible.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No entries match the current filters.</p>
+      ) : (
+        <ul className="space-y-2">
+          {visible.map((entry) => (
+            <li key={entry.id} className="rounded-lg border px-3 py-2">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span>{new Date(entry.at).toLocaleString()}</span>
+                <Badge variant="outline" className={actorBadgeClass(entry.actor)}>
+                  {ACTOR_LABEL[entry.actor]}
+                </Badge>
+                <span>{AUDIT_ACTION_LABEL[entry.action] ?? entry.action}</span>
+                {entry.stage && <span>· {entry.stage}</span>}
               </div>
-            )}
-            {entry.provenance && (
-              <details className="mt-1 text-xs text-muted-foreground">
-                <summary className="cursor-pointer">Provenance</summary>
-                <p>Produced by: {entry.provenance.producedBy}</p>
-                <p>Prompt version: {entry.provenance.promptVersion ?? '—'}</p>
-                <p>Input hash: {entry.provenance.inputHash}</p>
-                <p>Latency: {entry.provenance.latencyMs !== null ? `${entry.provenance.latencyMs}ms` : '—'}</p>
-              </details>
-            )}
-          </li>
-        ))}
-      </ul>
+              {entry.statementText && <p className="mt-1 text-sm">{entry.statementText}</p>}
+              {entry.note && <p className="mt-1 text-sm text-muted-foreground">{entry.note}</p>}
+              {(entry.before || entry.after) && (
+                <div className="mt-1 grid grid-cols-2 gap-2 text-xs">
+                  {entry.before && (
+                    <p className="text-muted-foreground">
+                      <span className="font-medium">Before:</span> {entry.before}
+                    </p>
+                  )}
+                  {entry.after && (
+                    <p className="text-muted-foreground">
+                      <span className="font-medium">After:</span> {entry.after}
+                    </p>
+                  )}
+                </div>
+              )}
+              {entry.provenance && (
+                <details className="mt-1 text-xs text-muted-foreground">
+                  <summary className="cursor-pointer">Provenance</summary>
+                  <p>Produced by: {entry.provenance.producedBy}</p>
+                  <p>Prompt version: {entry.provenance.promptVersion ?? '—'}</p>
+                  <p>Input hash: {entry.provenance.inputHash}</p>
+                  <p>Latency: {entry.provenance.latencyMs !== null ? `${entry.provenance.latencyMs}ms` : '—'}</p>
+                </details>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

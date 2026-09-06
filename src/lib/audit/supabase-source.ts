@@ -31,14 +31,16 @@ export async function buildAuditSource(): Promise<AuditSource> {
   return {
     getUserId,
     getRun: async (id) => {
-      const { data } = await supabase.from('runs').select('id, user_id').eq('id', id).maybeSingle();
+      const { data, error } = await supabase.from('runs').select('id, user_id').eq('id', id).maybeSingle();
+      if (error) throw new Error('Failed to load run: ' + error.message);
       return data ? { id: data.id, userId: data.user_id } : null;
     },
     listAuditEntries: async (runId, { limit, cursor, action }) => {
       let query = supabase.from('run_audit').select('*').eq('run_id', runId).order('id', { ascending: false }).limit(limit);
       if (cursor) query = query.lt('id', cursor);
       if (action) query = query.eq('action', action);
-      const { data } = await query;
+      const { data, error } = await query;
+      if (error) throw new Error('Failed to load audit entries: ' + error.message);
       return (data ?? []).map(toEntry);
     },
   };

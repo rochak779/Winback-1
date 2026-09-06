@@ -59,6 +59,36 @@ describe('createAuditListHandler', () => {
     expect(res.status).toBe(200);
     expect(body.data.entries).toHaveLength(1);
   });
+
+  it('returns a 500 INTERNAL response instead of empty data when the source throws', async () => {
+    const { source } = fixture();
+    const failing: AuditSource = {
+      ...source,
+      listAuditEntries: vi.fn(async () => {
+        throw new Error('db exploded');
+      }),
+    };
+    const res = await createAuditListHandler(failing)(new Request('http://localhost/x'), 'run-1');
+    expect(res.status).toBe(500);
+    const body = await res.json();
+    expect(body.ok).toBe(false);
+    expect(body.error.code).toBe('INTERNAL');
+  });
+
+  it('returns a 500 INTERNAL response when getRun throws (not a silent 404)', async () => {
+    const { source } = fixture();
+    const failing: AuditSource = {
+      ...source,
+      getRun: vi.fn(async () => {
+        throw new Error('db exploded');
+      }),
+    };
+    const res = await createAuditListHandler(failing)(new Request('http://localhost/x'), 'run-1');
+    expect(res.status).toBe(500);
+    const body = await res.json();
+    expect(body.ok).toBe(false);
+    expect(body.error.code).toBe('INTERNAL');
+  });
 });
 
 describe('createAuditExportHandler', () => {
@@ -69,5 +99,20 @@ describe('createAuditExportHandler', () => {
     expect(res.headers.get('Content-Disposition')).toMatch(/^attachment; filename="run-1-audit\.json"$/);
     const body = await res.json();
     expect(body.entries).toHaveLength(2);
+  });
+
+  it('returns a 500 INTERNAL response instead of an empty export when the source throws', async () => {
+    const { source } = fixture();
+    const failing: AuditSource = {
+      ...source,
+      listAuditEntries: vi.fn(async () => {
+        throw new Error('db exploded');
+      }),
+    };
+    const res = await createAuditExportHandler(failing)(new Request('http://localhost/x'), 'run-1');
+    expect(res.status).toBe(500);
+    const body = await res.json();
+    expect(body.ok).toBe(false);
+    expect(body.error.code).toBe('INTERNAL');
   });
 });
