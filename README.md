@@ -1,5 +1,8 @@
 # WinBack
 
+> This is an earlier WinBack prototype. For the current demo, video, and product scope,
+> see [winback-final](https://github.com/rochak779/winback-final).
+
 **Autonomous first-pass diligence for private equity deal teams.**
 
 ## The Problem
@@ -45,4 +48,3 @@ The version built here is one crosscheck engine on one deal, running against sta
 
 The application is deployed live on Vercel:
 **[https://winback-1.vercel.app](https://winback-1.vercel.app)**
-
